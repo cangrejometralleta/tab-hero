@@ -6,6 +6,8 @@ Un juego de ritmo para la música que ya suena en tu navegador. Comparte una pes
 
 JavaScript de navegador, Canvas 2D y Web Audio. Sin dependencias externas. El juego está en inglés, con español a un clic (arriba a la derecha).
 
+**[Juega en línea](https://cangrejometralleta.github.io/tab-hero/)** — Chrome o Edge para compartir una pestaña.
+
 ## Ejecutar
 
 ```sh

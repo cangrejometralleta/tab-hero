@@ -6,6 +6,8 @@ A rhythm game for the music already playing in your browser. Share a tab (YouTub
 
 Browser JavaScript, Canvas 2D and Web Audio. No external dependencies. The game is in English, with Spanish one click away (top right).
 
+**[Play it online](https://cangrejometralleta.github.io/tab-hero/)** — Chrome or Edge to share a tab.
+
 ## Run it
 
 ```sh
