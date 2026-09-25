@@ -1,0 +1,78 @@
+// English is the default; Spanish is one click away and remembered per browser.
+export const messages={
+  en:{
+    tag:'Your tabs have rhythm.',noSource:'No audio source',controls:'Session controls',
+    sensitivity:'Sensitivity',sensDown:'Lower sensitivity',sensUp:'Raise sensitivity',effects:'Effects',
+    file:'♪ File',demo:'Demo',stop:'Stop',
+    help:'Bass goes to the left fret; the melody plays middle (down) and right (up).',
+    intro:'Press as a note reaches the line; hold the key if it has a tail. Audio is analyzed on your device.',
+    arena:'Rhythm game with three frets: A(W/S)D or LEFT(UP/DOWN)RIGHT',score:'Score',time:'Time',streak:'Streak',multiplier:'Score multiplier',
+    canvas:'Notes falling toward the AWD frets',ready:'READY TO LISTEN',
+    lane0:'Left fret: A or left arrow',lane1:'Middle fret: W, S or up/down arrows',lane2:'Right fret: D or right arrow',
+    waiting:'Waiting for a signal',pulse:'Pulse',listenAttacks:'Listening for attacks',bestStrike:'Best strike',inARow:'in a row',
+    bestHelp:'Your longest STRIKE chain',inputLevel:'Input level',silence:'Silence is part of it too.',
+    footer:'Listen. React. Repeat.',privacy:'Local audio · No recordings',lang:'Español',
+    level:'Level {n}',session:'{hits} hits / {total} notes',sessionOver:'SESSION OVER',stopped:'Session over. You can start again.',
+    demoSession:'Demo · 120 BPM',fileSession:'File',demoSource:'Synthetic demo',
+    follow:'FOLLOW THE BEAT',
+    fileDelay:'Plays 2.2 s late: each note reaches the line right as it sounds.',
+    fileError:'Could not play that file. Try mp3, wav or ogg.',fileEnd:'End of track. Pick another file or start again.',
+    demoOn:'Visual demo at 120 BPM. Press AWD or the arrows; hold the key on notes with a tail.',
+    hidden:'Session stopped when you switched tabs. Start another when you are ready.',
+    hold:'HOLD',sustained:'SUSTAINED!',good:'GOOD',miss:'MISS',early:'RELEASED EARLY',offBeat:'OFF BEAT',
+    fileSync:'Synced with the playback',
+    tab:'⧉ Tab',tabSession:'Tab audio',tabSource:'⧉ Sharing tab audio',pickTab:'Pick a tab and turn on “Share tab audio”.',
+    tabDelay:'The tab is muted and plays here 2.2 s late: each note reaches the line as it sounds.',
+    tabNoAudio:'That share has no audio. Pick a tab and turn on “Share tab audio”.',tabEnd:'Tab sharing stopped.',
+    tabCancelled:'Sharing cancelled. Try again or load a file.',tabUnsupported:'This browser cannot share tab audio. Use Chrome or Edge, or load a file.',demoPulse:'Demo pulse',
+    tooQuiet:'Turn the volume up or raise sensitivity.',attack:'Attack detected',listening:'Listening',
+    noteNames:['C','C♯','D','D♯','E','F','F♯','G','G♯','A','A♯','B'],demoNotes:['C','E','G','A'],
+    strikes:['STRIKE!','DOUBLE STRIKE!','TRIPLE STRIKE!!','UNSTOPPABLE!!','ON FIRE!!!','LEGEND!!!','GOD MODE!!!!'],
+    milestones:{10:'10 IN A ROW!',25:'25! WHAT A STREAK!',50:'50! DON\'T STOP!',100:'100! INCREDIBLE!'},hundreds:'{n}! LEGENDARY!'
+  },
+  es:{
+    tag:'Tus pestañas tienen ritmo.',noSource:'Sin fuente de audio',controls:'Controles de la sesión',
+    sensitivity:'Sensibilidad',sensDown:'Bajar sensibilidad',sensUp:'Subir sensibilidad',effects:'Efectos',
+    file:'♪ Archivo',demo:'Demo',stop:'Terminar',
+    help:'El bajo va al traste izquierdo; la melodía al del medio (baja) y al derecho (sube).',
+    intro:'Pulsa al llegar a la línea; mantén la tecla si hay una cola. El audio se analiza en tu dispositivo.',
+    arena:'Juego de ritmo con tres trastes: A(W/S)D o LEFT(UP/DOWN)RIGHT',score:'Puntuación',time:'Tiempo',streak:'Racha',multiplier:'Multiplicador de puntos',
+    canvas:'Notas que descienden hacia las teclas AWD',ready:'LISTO PARA ESCUCHAR',
+    lane0:'Traste izquierdo: A o flecha izquierda',lane1:'Traste central: W, S o flechas arriba o abajo',lane2:'Traste derecho: D o flecha derecha',
+    waiting:'Esperando una señal',pulse:'Pulso',listenAttacks:'Escucha ataques',bestStrike:'Mayor strike',inARow:'seguidos',
+    bestHelp:'Tu mejor cadena de STRIKE',inputLevel:'Nivel de entrada',silence:'El silencio también es parte.',
+    footer:'Escucha. Reacciona. Repite.',privacy:'Audio local · Sin grabaciones',lang:'English',
+    level:'Nivel {n}',session:'{hits} aciertos / {total} notas',sessionOver:'SESIÓN TERMINADA',stopped:'Sesión terminada. Puedes volver a empezar.',
+    demoSession:'Demo · 120 BPM',fileSession:'Archivo',demoSource:'Demo sintética',
+    follow:'SIGUE EL RITMO',
+    fileDelay:'Sonará con 2,2 s de retraso: cada nota llega a la línea justo cuando suena.',
+    fileError:'No se pudo reproducir ese archivo. Prueba con mp3, wav u ogg.',fileEnd:'Fin del tema. Elige otro archivo o vuelve a empezar.',
+    demoOn:'Demo visual a 120 BPM. Pulsa AWD o las flechas; mantén la tecla en las notas con cola.',
+    hidden:'Sesión detenida al cambiar de pestaña. Inicia otra cuando estés listo.',
+    hold:'MANTÉN',sustained:'SOSTENIDA!',good:'BIEN',miss:'MISS',early:'SOLTASTE ANTES',offBeat:'FUERA DE TIEMPO',
+    fileSync:'Sincronizado con la reproducción',
+    tab:'⧉ Pestaña',tabSession:'Audio de pestaña',tabSource:'⧉ Compartiendo audio de pestaña',pickTab:'Elige una pestaña y activa “Compartir audio de la pestaña”.',
+    tabDelay:'La pestaña se silencia y suena aquí con 2,2 s de retraso: cada nota llega a la línea cuando suena.',
+    tabNoAudio:'Eso no comparte audio. Elige una pestaña y activa “Compartir audio de la pestaña”.',tabEnd:'Se dejó de compartir la pestaña.',
+    tabCancelled:'Compartir cancelado. Vuelve a intentarlo o carga un archivo.',tabUnsupported:'Este navegador no puede compartir audio de pestañas. Usa Chrome o Edge, o carga un archivo.',demoPulse:'Pulso de demostración',
+    tooQuiet:'Sube el volumen o la sensibilidad.',attack:'Ataque detectado',listening:'Escuchando',
+    noteNames:['Do','Do♯','Re','Re♯','Mi','Fa','Fa♯','Sol','Sol♯','La','La♯','Si'],demoNotes:['Do','Mi','Sol','La'],
+    strikes:['STRIKE!','STRIKE DOBLE!','TRIPLE STRIKE!!','IMPARABLE!!','EN LLAMAS!!!','LEYENDA!!!','MODO DIOS!!!!'],
+    milestones:{10:'¡10 SEGUIDAS!',25:'¡25! ¡QUÉ RACHA!',50:'¡50! ¡NO PARES!',100:'¡100! ¡INCREÍBLE!'},hundreds:'¡{n}! ¡HISTÓRICO!'
+  }
+};
+let current='en';
+try{if(localStorage.getItem('lang')==='es')current='es';}catch{}
+export const lang=()=>current;
+export function t(key,vars={}){
+  const value=messages[current][key];
+  return typeof value==='string'?value.replace(/\{(\w+)\}/g,(_,k)=>vars[k]):value;
+}
+// Static text lives in data-i18n (textContent) and data-i18n-aria (aria-label).
+export function setLang(next){
+  current=next;try{localStorage.setItem('lang',next);}catch{}
+  if(typeof document==='undefined')return;
+  document.documentElement.lang=next;
+  for(const el of document.querySelectorAll('[data-i18n]'))el.textContent=t(el.dataset.i18n);
+  for(const el of document.querySelectorAll('[data-i18n-aria]'))el.setAttribute('aria-label',t(el.dataset.i18nAria));
+}

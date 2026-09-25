@@ -1,0 +1,55 @@
+:root{color-scheme:dark;--ink:#ecf1ff;--muted:#96a4bd;--bg:#0c1426;--pink:#ff73b5;--blue:#70cfff;--mint:#83f0ca;--gold:#ffd078}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Arial,Helvetica,sans-serif}header{height:100px;margin:0 5%;display:flex;align-items:center;gap:45px;border-bottom:1px solid #293249}.brand{color:var(--ink);font-size:23px;font-weight:800;text-decoration:none;letter-spacing:-1px}.brand span{color:var(--pink)}.tag,#source{font-size:12px;color:var(--muted)}#source{margin-left:auto}main{max-width:1500px;margin:auto;display:grid;grid-template-columns:1fr 1.55fr .7fr;gap:45px;padding:45px 5% 30px;align-items:center}.edition{font-size:13px;color:var(--pink)}h1{font-size:clamp(32px,3.8vw,58px);letter-spacing:-2.5px;line-height:1.02;margin:22px 0}p{font-size:14px;line-height:1.65;color:var(--muted)}.intro>p{max-width:290px}.actions{display:flex;flex-direction:column;gap:10px;margin-top:28px;max-width:280px}button{font:inherit;cursor:pointer;color:var(--ink);border:1px solid #44506a;border-radius:7px;padding:14px 18px;background:#202d47}button:disabled{opacity:.4;cursor:default}button:focus-visible,input:focus-visible{outline:3px solid white;outline-offset:4px}#tab{background:var(--pink);color:#22162d;font-size:13px;font-weight:bold;border:0;display:flex;justify-content:space-between}.secondary{background:transparent;font-size:13px}#status{font-size:12px;min-height:60px}.settings{max-width:280px;margin-top:25px}label{font-size:12px;color:var(--muted);display:block}output{float:right}input[type=range]{width:100%;accent-color:var(--pink);margin:15px 0 20px}.check{display:flex;gap:8px;align-items:center}.textbutton{border:0;background:none;padding:20px 0;color:var(--muted);font-size:12px}.arena{height:660px;position:relative;overflow:hidden;background:radial-gradient(ellipse at 50% 80%,#253251,#111b30 65%);border:1px solid #34405a;border-radius:15px}.scorebar{position:absolute;z-index:1;top:25px;left:26px;right:26px;display:flex;justify-content:space-between;font-size:11px;color:var(--muted)}.scorebar strong{display:block;font-size:27px;font-weight:400;letter-spacing:1px;color:var(--ink);margin-top:7px}.combo{text-align:right}small{font-size:13px;color:var(--muted)}canvas{width:100%;height:100%;display:block}#verdict{position:absolute;top:35%;width:100%;text-align:center;font-size:12px;letter-spacing:3px;color:#b6c8e0;pointer-events:none}.pads{position:absolute;bottom:62px;left:7%;right:7%;display:flex;justify-content:space-around;gap:10px}.pads button{width:52px;height:52px;border-radius:50%;padding:0;background:#17233a;border:2px solid currentColor;box-shadow:0 0 20px #0004;font-size:20px;font-weight:bold;touch-action:manipulation}.pads button:nth-child(1){color:var(--pink)}.pads button:nth-child(2){color:var(--blue)}.pads button:nth-child(3){color:var(--mint)}.pads button small{display:block;font-size:10px;line-height:12px;color:inherit}.pads button{flex:none}.pads{gap:0}.pads button.active{background:currentColor;box-shadow:0 0 32px currentColor}.arenafoot{position:absolute;bottom:20px;left:22px;right:22px;display:flex;justify-content:space-between;font-size:10px;color:var(--muted)}.readout{padding-bottom:28px;margin-bottom:28px;border-bottom:1px solid #293249}.readout>span,.signal>span,.guide>span{font-size:12px;color:var(--muted)}.readout strong{font-size:54px;letter-spacing:-2px;font-weight:400}.readout div{margin-top:10px;display:flex;align-items:baseline;gap:9px}.readout p,.signal p{font-size:11px}.meter{height:5px;background:#2d3850;margin-top:20px;border-radius:4px;overflow:hidden}.meter i{height:100%;width:0;display:block;background:var(--mint)}.guide{margin-top:45px}.guide p{font-size:12px;margin-top:18px}.guide b{font-size:10px;color:var(--pink);margin-right:8px}footer{display:flex;justify-content:space-between;margin:0 5%;padding:20px 0;border-top:1px solid #293249;color:#8493ab;font-size:11px}#instrument{width:100%;margin-top:9px;padding:11px 12px;border:1px solid #44506a;border-radius:7px;background:#202d47;color:var(--ink);font:inherit;font-size:13px}#modeHelp{font-size:11px;line-height:1.5;margin:10px 0 20px}
+/* Controls sit in one bar above the stage; the signal strip follows, then the game. */
+header{height:72px;margin:0 32px;gap:24px}
+main{max-width:1100px;padding:20px 32px;grid-template-columns:minmax(0,1fr);gap:14px;align-items:start}
+.intro{display:flex;flex-wrap:wrap;align-items:flex-end;gap:10px 18px;padding:12px 16px;background:#121e33;border:1px solid #293249;border-radius:10px}
+.field label,.check{font-size:11px;color:var(--muted)}
+#instrument{width:auto;margin-top:5px;padding:7px 10px;font-size:12px}
+.sens{min-width:210px}.sens output{float:none;margin-left:6px;color:var(--ink)}
+.stepper{display:flex;align-items:center;gap:6px;margin-top:5px}
+.stepper input[type=range]{flex:1;margin:0;min-width:110px}
+.step{width:28px;height:28px;padding:0;border-radius:50%;font-size:16px;line-height:1}
+.check{padding-bottom:7px}
+.actions{flex-direction:row;margin:0 0 0 auto;gap:6px;max-width:none}
+.actions button{padding:8px 12px;font-size:12px}
+#tab{font-size:12px}
+#modeHelp,#status{flex-basis:100%;margin:0;font-size:11px;line-height:1.5;min-height:0}
+#status{color:var(--ink)}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
+.telemetry{display:grid;grid-template-columns:1fr 1fr 1.15fr;gap:20px;padding:12px 20px;background:#121e33;border:1px solid #293249;border-radius:10px;min-width:0}
+.readout{padding:0;margin:0;border:0;min-width:0}
+.readout+ .readout,.signal{border-left:1px solid #293249;padding-left:20px;min-width:0}
+.readout div{margin-top:6px;gap:8px}
+.readout strong{font-size:30px;letter-spacing:-1px;font-variant-numeric:tabular-nums}
+.readout p,.signal p{font-size:10px;line-height:1.4;margin:6px 0 0}
+.readout>span,.signal>span{font-size:11px}
+.meter{margin:22px 0 15px}
+.arena{width:100%;height:clamp(430px,calc(100dvh - 330px),700px);border-radius:12px}
+footer{margin:0 32px;padding:16px 0}
+@media(max-width:850px){
+ header{margin:0 20px;height:64px}.tag{display:none}
+ main{padding:16px 20px;gap:12px}
+ .actions{margin-left:0}
+ .telemetry{padding:12px 14px;gap:12px}
+ .arena{height:480px}
+ footer{margin:0 20px}
+}
+@media(max-width:440px){
+ header{margin:0 14px}.brand{font-size:18px}#source{font-size:9px;max-width:115px;text-align:right}
+ main{padding:12px 14px}.intro{padding:10px 12px}.sens{flex:1}
+ .actions{width:100%}.actions button{flex:1;padding:8px 6px}
+ .telemetry{gap:10px;padding:12px 10px}
+ .readout+ .readout,.signal{padding-left:10px}.readout strong{font-size:25px}.readout div{gap:4px}.readout small{font-size:10px}.readout>span,.signal>span{font-size:10px}
+ .readout p,.signal p{font-size:9px}.arena{height:440px}.arenafoot{font-size:9px;left:14px;right:14px}footer{margin:0 14px;font-size:9px}
+}
+.arena{order:2}.telemetry{order:3}
+canvas.jump{animation:neckjump .55s cubic-bezier(.3,.6,.4,1)}@keyframes neckjump{0%{transform:none}20%{transform:translateY(-38px) rotate(-2.5deg)}45%{transform:translateY(8px) rotate(1.5deg)}70%{transform:translateY(-10px) rotate(-.6deg)}100%{transform:none}}
+#difficulty{display:block;margin-top:4px;font-size:11px;letter-spacing:1px;color:var(--gold)}
+.langswitch{padding:6px 10px;font-size:11px;background:transparent}
+#backdrop{position:absolute;inset:0;width:100%;height:100%;opacity:0;transition:opacity .6s}#backdrop.on{opacity:.4}#game{position:relative}
+#tabVideo{position:absolute;width:2px;height:2px;opacity:0;pointer-events:none}
+/* Frets glow brighter with each multiplier step. */
+.pads[data-power='2'] button{box-shadow:0 0 14px currentColor}.pads[data-power='3'] button{box-shadow:0 0 24px currentColor,inset 0 0 10px currentColor}.pads[data-power='4'] button{box-shadow:0 0 36px currentColor,inset 0 0 16px currentColor}.pads button{transition:box-shadow .3s}
+.pads[data-power] button.active{box-shadow:0 0 44px currentColor}
+.clock{text-align:center}.clock strong{font-variant-numeric:tabular-nums}
+.brand{display:flex;align-items:center;gap:10px}.brand img{display:block}
