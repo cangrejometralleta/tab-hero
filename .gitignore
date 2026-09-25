@@ -1,0 +1,4 @@
+# The OneTwoThree canon is a vendored clone, fetched by one-two-update.
+# The Repository carries only its links, never the clone. No trailing slash:
+# the pattern must still match the day the entrance becomes a link.
+/.agents/canon
