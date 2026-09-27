@@ -35,9 +35,9 @@ Firefox and Safari cannot share tab audio. Stopping the share, or pressing **Sto
 
 **Hear first, play later.** A note needs time to fall, so it can never land when its sound first plays. Tab Hero listens to the music 2.2 s ahead of you and delays what you hear (and see) by the same amount. Every note reaches the line exactly as its sound plays.
 
-**Sound becomes notes.** Every attack (a hit, a pluck, a syllable) and every pitch change makes a note. Bass and melody are heard as separate voices.
+**Sound becomes notes.** Every attack (a hit, a pluck, a syllable) and every pitch change makes a note. Only the melody plays; the bass is filtered out.
 
-**Three frets.** Notes fall into three frets: `A (W/S) D` or `← (↑/↓) →`, or tap the circles. Bass attacks (35–220 Hz) fall on the left fret. The melody, heard through a high-pass above 220 Hz, falls middle when it goes down and right when it goes up; a repeated note stays on its fret.
+**Three frets.** Notes fall into three frets: `A (W/S) D` or `← (↑/↓) →`, or tap the circles. The melody, heard through a high-pass above 220 Hz, walks the frets: a step down moves one fret left, a step up one fret right, a leap of a fourth or more moves two, and a repeated note stays put.
 
 **The line is the moment.** Press as the note's button meets the fret circle. STRIKE is within ±180 ms, GOOD within ±350 ms. A note with a tail (a held pitch, up to 1.5 s) must be held until the end; you may let go up to 200 ms early.
 
@@ -53,7 +53,7 @@ Firefox and Safari cannot share tab audio. Stopping the share, or pressing **Sto
 
 ## Limits
 
-Pitch detection uses autocorrelation and works best with one clear voice or instrument (200–1000 Hz for the melody); dense mixes give fewer pitched notes. Bass and melody are split by filters, not true instrument separation: a kick drum counts as bass, and unpitched hits above the bass make no note. The BPM needs at least five regular attacks. The 2.2 s delay is fixed; speaker latency reported by the browser is compensated, Bluetooth delay may not be.
+Pitch detection uses autocorrelation and works best with one clear voice or instrument (200–1000 Hz for the melody); dense mixes give fewer pitched notes. The bass is removed by a filter, not true instrument separation; drums and other unpitched hits make no notes. The BPM needs at least five regular attacks. The 2.2 s delay is fixed; speaker latency reported by the browser is compensated, Bluetooth delay may not be.
 
 ## Files
 

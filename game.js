@@ -3,7 +3,7 @@ import {strikeText,milestoneText} from './hype.js';
 import {t as tr,lang,setLang} from './i18n.js';
 import {detectPitch,PulseTracker,bandEnergy,listening,NoteTracker} from './audio.js';
 const $=id=>document.getElementById(id),canvas=$('game'),ctx=canvas.getContext('2d');
-const colors=['#ff73b5','#70cfff','#83f0ca'],keys={KeyA:0,KeyS:1,KeyW:1,KeyD:2,ArrowLeft:0,ArrowUp:1,ArrowDown:1,ArrowRight:2},pads=[...document.querySelectorAll('[data-lane]')];
+const colors=['#4ade80','#ff4d5e','#ffd23f'],keys={KeyA:0,KeyS:1,KeyW:1,KeyD:2,ArrowLeft:0,ArrowUp:1,ArrowDown:1,ArrowRight:2},pads=[...document.querySelectorAll('[data-lane]')];
 const pressed=new Map();let sustaining=null;
 const hitWindow=.35,perfectWindow=.18;let travel=2.2,level=0;
 const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;$('effects').checked=!reduced;
@@ -11,10 +11,10 @@ const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;$('effects'
 const fileDelay=2.2;
 let width=500,height=660,mode=null,stream,player,audio,analyser,buffer,spectrum,notes=[],particles=[],labels=[],score=0,combo=0,total=0,hits=0,lastSpawn=-10,lastAnalysis=0,lastDemo=0,previousPitch=null,candidate=null,stableFrames=0,verdictUntil=0,token=0,strikes=0,bestStrikes=0;
 let startedAt=null,shownClock='';
-const pulse=new PulseTracker(),bassPulse=new PulseTracker(),melodyPulse=new PulseTracker(),noteTracker=new NoteTracker();let melodyAnalyser,melodyBuffer;let demoIndex=0;
+const pulse=new PulseTracker(),melodyPulse=new PulseTracker(),noteTracker=new NoteTracker();let melodyAnalyser,melodyBuffer;let demoIndex=0;
 new ResizeObserver(()=>{const rect=canvas.getBoundingClientRect();width=rect.width;height=rect.height;const dpr=Math.min(devicePixelRatio,2);canvas.width=width*dpr;canvas.height=height*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);}).observe(canvas);
 function announce(text){$('status').textContent=text;}
-function reset(){notes=[];particles=[];labels=[];score=combo=hits=total=strikes=bestStrikes=0;$('bestStrike').textContent='0';lastSpawn=-10;previousPitch=candidate=null;stableFrames=0;pulse.reset();bassPulse.reset();melodyPulse.reset();noteTracker.reset();setLevel(0);$('score').textContent='000000';$('combo').textContent='0';startedAt=null;$('clock').textContent=shownClock='00:00';$('bpm').textContent='—';$('level').style.width='0%';}
+function reset(){notes=[];particles=[];labels=[];score=combo=hits=total=strikes=bestStrikes=0;$('bestStrike').textContent='0';lastSpawn=-10;previousPitch=candidate=null;stableFrames=0;pulse.reset();melodyPulse.reset();noteTracker.reset();setLevel(0);$('score').textContent='000000';$('combo').textContent='0';startedAt=null;$('clock').textContent=shownClock='00:00';$('bpm').textContent='—';$('level').style.width='0%';}
 // The shared tab's video is replayed behind the neck with the same delay as its audio.
 const backdrop=$('backdrop'),backdropCtx=backdrop.getContext('2d');let frames=[],lastCapture=0;
 function clearBackdrop(){frames.forEach(f=>f.bitmap.close());frames=[];$('tabVideo').srcObject=null;backdrop.classList.remove('on');}
@@ -91,7 +91,7 @@ function emitSparks(x,y,color,count,burst=false){
 // `at` is when the note reaches the line; `travel` only sets how long it is visible.
 function spawn(lane,t,duration=0,at=t+travel){
   // A lane never stacks two notes: skip one that would overlap a note or tail already there.
-  if(notes.some(n=>n.lane===lane&&Math.abs(n.at-at)<.2||n.lane===lane&&n.duration>0&&n.at<at&&n.at+n.duration>at-.2))return null;
+  if(notes.some(n=>n.lane===lane&&Math.abs(n.at-at)<.15||n.lane===lane&&n.duration>0&&n.at<at&&n.at+n.duration>at-.15))return null;
   const note={lane,at,travel,duration,sparkBudget:0,holding:false};notes.push(note);lastSpawn=t;return note;
 }
 // Losing a streak above 10 makes the guitar neck jump.
@@ -99,7 +99,7 @@ function jumpNeck(){if(combo<=10||reduced)return;canvas.classList.remove('jump')
 // Every 5 strikes in a row raise the level (max 4): faster notes, slightly denser notes.
 function setLevel(next){
   if(next===level)return;level=next;
-  travel=2.2-.15*level;pulse.minGap=bassPulse.minGap=melodyPulse.minGap=noteTracker.minGap=.24-.01*level;
+  travel=2.2-.15*level;pulse.minGap=.24-.01*level;melodyPulse.minGap=noteTracker.minGap=.18-.01*level;
   $('difficulty').textContent=level?tr('level',{n:level}):'';
 }
 function verdict(text,t,color='#ecf1ff',hold=.7){$('verdict').textContent=text;$('verdict').style.color=color;verdictUntil=t+hold;}
@@ -147,9 +147,9 @@ function analyze(t){
   $('signalText').textContent=energy<threshold?tr('tooQuiet'):pulse.onset?tr('attack'):tr('listening');
   melodyAnalyser.getFloatTimeDomainData(melodyBuffer);
   const band=([lo,hi])=>bandEnergy(spectrum,audio.sampleRate,analyser.fftSize,lo,hi);
-  bassPulse.update(band(listening.bass),t,threshold*.5);melodyPulse.update(band(listening.melody),t,threshold*.5);
-  const hz=energy<threshold?null:detectPitch(melodyBuffer,audio.sampleRate,{minRms:threshold*.3,clarity:.7,minHz:listening.melody[0]*.9}).hz;
-  const made=noteTracker.update(hz,melodyPulse.onset,bassPulse.onset,t);
+  melodyPulse.update(band(listening.melody),t,threshold*.5);
+  const hz=energy<threshold?null:detectPitch(melodyBuffer,audio.sampleRate,{minRms:threshold*.3,clarity:.45,minHz:listening.melody[0]*.9}).hz;
+  const made=noteTracker.update(hz,melodyPulse.onset,t);
   const midi=hz?Math.round(69+12*Math.log2(hz/440)):null;
   for(const {lane,midi:pitch} of made){
     // A fresh attack ends a previous sustain in its lane before the next head arrives.

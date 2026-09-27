@@ -35,9 +35,9 @@ Firefox y Safari no comparten audio de pestañas. Dejar de compartir, o pulsar *
 
 **Escuchar antes, tocar después.** Una nota necesita tiempo para caer, así que no puede llegar justo cuando su sonido empieza. Tab Hero escucha la música 2,2 s antes que tú y retrasa lo que oyes (y ves) lo mismo. Cada nota llega a la línea justo cuando suena.
 
-**El sonido se vuelve notas.** Cada ataque (un golpe, una cuerda, una sílaba) y cada cambio de tono genera una nota. El bajo y la melodía se escuchan como voces separadas.
+**El sonido se vuelve notas.** Cada ataque (un golpe, una cuerda, una sílaba) y cada cambio de tono genera una nota. Solo suena la melodía; el bajo se filtra.
 
-**Tres trastes.** Las notas caen en tres trastes: `A (W/S) D` o `← (↑/↓) →`, o toca los círculos. Los ataques del bajo (35–220 Hz) caen en el traste izquierdo. La melodía, escuchada con un filtro paso alto sobre 220 Hz, cae al centro cuando baja y a la derecha cuando sube; una nota repetida se queda en su traste.
+**Tres trastes.** Las notas caen en tres trastes: `A (W/S) D` o `← (↑/↓) →`, o toca los círculos. La melodía, escuchada con un filtro paso alto sobre 220 Hz, recorre los trastes: un paso hacia abajo mueve un traste a la izquierda, uno hacia arriba un traste a la derecha, un salto de una cuarta o más mueve dos, y una nota repetida se queda.
 
 **La línea es el momento.** Pulsa cuando el botón de la nota encaja en el círculo del traste. STRIKE: ±180 ms; BIEN: ±350 ms. Una nota con cola (un tono sostenido, hasta 1,5 s) se mantiene hasta el final; puedes soltar hasta 200 ms antes.
 
@@ -53,7 +53,7 @@ Firefox y Safari no comparten audio de pestañas. Dejar de compartir, o pulsar *
 
 ## Límites
 
-La detección de tono usa autocorrelación y funciona mejor con una voz o un instrumento claro (200–1000 Hz para la melodía); las mezclas densas dan menos notas con tono. El bajo y la melodía se separan con filtros, no con separación real de instrumentos: un bombo cuenta como bajo, y los golpes sin tono por encima del bajo no generan notas. El BPM necesita al menos cinco ataques regulares. El retraso de 2,2 s es fijo; se compensa la latencia de salida que informa el navegador, pero quizá no la de auriculares Bluetooth.
+La detección de tono usa autocorrelación y funciona mejor con una voz o un instrumento claro (200–1000 Hz para la melodía); las mezclas densas dan menos notas con tono. El bajo se quita con un filtro, no con separación real de instrumentos; la batería y otros golpes sin tono no generan notas. El BPM necesita al menos cinco ataques regulares. El retraso de 2,2 s es fijo; se compensa la latencia de salida que informa el navegador, pero quizá no la de auriculares Bluetooth.
 
 ## Archivos
 

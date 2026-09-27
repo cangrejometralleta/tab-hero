@@ -10,7 +10,12 @@ export function detectPitch(data, sampleRate, {minRms=.008,clarity=.88,minHz=75}
     for(let i=0;i<data.length-max;i++){cross+=data[i]*data[i+lag];a+=data[i]**2;b+=data[i+lag]**2;}
     correlations[lag]=cross/Math.sqrt(a*b || 1);
   }
-  for(let lag=min+1;lag<max;lag++) if(correlations[lag]>clarity && correlations[lag]>correlations[lag-1] && correlations[lag]>=correlations[lag+1]) {
+  // The best peak must pass the clarity gate; the first peak close to it is the period, not an octave below.
+  const peaks=[];
+  for(let lag=min+1;lag<max;lag++) if(correlations[lag]>0 && correlations[lag]>correlations[lag-1] && correlations[lag]>=correlations[lag+1])peaks.push(lag);
+  const best=Math.max(0,...peaks.map(lag=>correlations[lag]));
+  if(best<=clarity)return {rms,hz:null};
+  for(const lag of peaks) if(correlations[lag]>=best*.9) {
     const left=correlations[lag-1],mid=correlations[lag],right=correlations[lag+1];
     const shift=(left-right)/(2*(left-2*mid+right)||1);
     return {rms,hz:sampleRate/(lag+shift)};
@@ -49,25 +54,22 @@ export function bandEnergy(spectrum, sampleRate, fftSize, low, high) {
 
 export const bassEnergy=(spectrum,rate,size)=>bandEnergy(spectrum,rate,size,35,220);
 
-// Bass and melody are separate voices: bass attacks own the left fret, melody the other two.
-export const listening={low:35,high:8000,bass:[35,220],melody:[220,8000]};
+// Only the melody makes notes; the bass is filtered out before its pitch is read.
+export const listening={low:35,high:8000,melody:[220,8000]};
 export class NoteTracker {
   constructor(){this.reset();}
-  reset(){this.minGap=.24;this.candidate=null;this.frames=0;this.lastPitch=null;this.bassAt=-10;this.melodyAt=-10;this.lane=2;}
-  // Returns the notes this frame makes: a bass attack, a melody attack or pitch change, or both.
-  update(hz,melodyOnset,bassOnset,t){
-    const made=[];
-    if(bassOnset&&t-this.bassAt>=this.minGap){this.bassAt=t;made.push({lane:0,midi:null});}
+  reset(){this.minGap=.18;this.candidate=null;this.frames=0;this.lastPitch=null;this.melodyAt=-10;this.lane=1;}
+  // Returns the notes this frame makes: a melody attack or a pitch change.
+  update(hz,onset,t){
     const midi=hz?Math.round(69+12*Math.log2(hz/440)):null;
     if(midi===null){this.candidate=null;this.frames=0;}
     else if(this.candidate===midi)this.frames++;
     else{this.candidate=midi;this.frames=1;}
     const pitchChanged=midi!==null&&this.frames>=2&&midi!==this.lastPitch;
-    if(midi!==null&&(pitchChanged||melodyOnset)&&t-this.melodyAt>=this.minGap){
-      // The melody's contour picks the fret: falling goes middle, rising goes right, repeats stay put.
-      if(this.lastPitch!==null&&midi!==this.lastPitch)this.lane=midi>this.lastPitch?2:1;
-      this.lastPitch=midi;this.melodyAt=t;made.push({lane:this.lane,midi});
-    }
-    return made;
+    if(midi===null||!(pitchChanged||onset)||t-this.melodyAt<this.minGap)return [];
+    // The contour walks the frets: a step moves one fret, a leap of a fourth or more moves two, repeats stay.
+    if(this.lastPitch!==null&&midi!==this.lastPitch){const leap=Math.abs(midi-this.lastPitch)>=5?2:1;this.lane=Math.max(0,Math.min(2,this.lane+Math.sign(midi-this.lastPitch)*leap));}
+    this.lastPitch=midi;this.melodyAt=t;
+    return [{lane:this.lane,midi}];
   }
 }
