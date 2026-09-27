@@ -51,6 +51,27 @@ Firefox and Safari cannot share tab audio. Stopping the share, or pressing **Sto
 
 **Privacy.** Audio and video are analyzed on your device. Nothing is recorded or sent.
 
+## Duel
+
+**[⚔ Duel](https://cangrejometralleta.github.io/tab-hero/duel.html)** is a second game on the same keys: two samurai, bout after bout, on a built-in beat or on a shared tab's music. **Stop** ends the session; the header counts your wins and losses, kept in this browser, and the bar below shows the session time.
+
+- `A` / `D` walk freely; `W` jumps a low cut; `S` ducks a high one.
+- `SPACE` cuts on the beat. STRIKE: ±90 ms; GOOD: ±180 ms. Off the beat, it misses and breaks the combo.
+- Out of reach, an on-beat cut throws a **ki wave**: 40% of the blade's damage, and it keeps the combo without growing it. The rival throws its own when far (high or low, dodged like its cuts); `W` or `S` on the beat deflects it back. Only the blade builds the multiplier, so close in.
+- **Trading blows.** The rival never cuts on two beats in a row, so the beat after its cut is yours to answer. After every blade exchange it answers on the beat after next.
+- The rival parries too: 20% of your STRIKEs and 35% of your GOOD cuts at ×1, +10% per multiplier step, up to 70%. A parried cut pushes you back; a parried GOOD also breaks the combo.
+- The rival reads the bout: ahead on health it presses in for the blade; behind, it backs away and leans on ki.
+- A landed blow pushes the one hit back: a STRIKE shoves the rival furthest, a ki wave barely; the rival's cuts push you too.
+- **One action per beat.** A cut or a parry spends the beat; a second one on the same beat fails (BEAT SPENT), and a second cut also breaks the combo. Walking with `A` / `D`, jumping and ducking are free.
+- Between attacks both samurai dance to the beat: a dip on each beat, a sway from side to side, the blade rocking, and steps while they walk. Attacks, parries and ki keep their own poses.
+- Damage shows: as health falls, cuts and tears open on the gi, the hakama frays and the face gets scratched and bruised. Past 40% damage a samurai tires: at rest it pants, slouches, half-closes its eye, lets the blade droop and sweats.
+- Blade hits and parries flash the screen, hold the frame for a moment and shake it.
+- The rhythm track at the top brings each beat into the hit zone (its frame is the GOOD window, its core the STRIKE window). A pink sword is your beat to cut with `SPACE`; a gold shield on red is the rival's cut. A prompt at its left names what the next beat asks for, and a gold "!" over the rival plus "W / S" over you warn of its cut. Spent beats turn white, and a red cross marks a miss or a hit taken. Every landed beat bursts sparks out of the zone; the multiplier makes the burst bigger, gives the zone a glow in its colour, shows a ×N badge that swells when it climbs, and from ×3 sets embers rising from the zone. `W` or `S` on it parries, high or low; elsewhere they just jump or duck.
+- Every STRIKE in a row adds to the combo; each 4 raises the multiplier, up to ×4, on damage and points. From ×2 your samurai glows blue, then gold, then pink. The combo carries across bouts.
+- Each multiplier step makes the rival tougher: +10 BPM on the built-in beat (100 up to 130), more cuts, and +4 damage per cut (16 up to 28).
+- **⧉ Tab** works as in the rhythm game: the tab is heard 2.2 s late, its pixelated video on the horizon. Each attack in its music becomes a beat on the track, so you cut, parry and dodge on the music itself. **Sensitivity** (80% by default) sets how soft an attack still counts; raise it if few beats appear. With a tab the tempo is the music's; the rival still gets bolder and harder-hitting. If sharing stops, the metronome takes over.
+- Each samurai has 250 health, so a bout runs about 30 s. It has no time limit: it ends only when someone falls, with a K.O. flash and a pause while the loser staggers, kneels and falls and the winner raises the blade; if both fall together it counts as neither.
+
 ## Limits
 
 Pitch detection uses autocorrelation and works best with one clear voice or instrument (200–1000 Hz for the melody); dense mixes give fewer pitched notes. The bass is removed by a filter, not true instrument separation; drums and other unpitched hits make no notes. The BPM needs at least five regular attacks. The 2.2 s delay is fixed; speaker latency reported by the browser is compensated, Bluetooth delay may not be.
@@ -60,6 +81,8 @@ Pitch detection uses autocorrelation and works best with one clear voice or inst
 | File | Holds |
 | --- | --- |
 | `game.js` | Game loop, input, drawing, tab and file sessions, delayed video |
+| `duel.html`, `duel.js` | Samurai duel: endless bouts on a built-in beat or a tab |
+| `duel-rules.js` | Duel timing, combo, difficulty and bout rules |
 | `audio.js` | Pitch, pulse, bands, note tracking |
 | `sustain.js` | Held-note rules |
 | `hype.js` | Strike and streak messages |

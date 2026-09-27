@@ -51,6 +51,27 @@ Firefox y Safari no comparten audio de pestañas. Dejar de compartir, o pulsar *
 
 **Privacidad.** El audio y el video se analizan en tu dispositivo. No se graba ni se envía nada.
 
+## Duelo
+
+**[⚔ Duelo](https://cangrejometralleta.github.io/tab-hero/duel.html)** es un segundo juego con las mismas teclas: dos samuráis, combate tras combate, sobre un compás propio o sobre la música de una pestaña. **Terminar** cierra la sesión; arriba se cuentan tus victorias y derrotas, guardadas en este navegador, y la barra de abajo muestra el tiempo de sesión.
+
+- `A` / `D` caminan libremente; `W` salta un corte bajo; `S` se agacha ante uno alto.
+- `ESPACIO` corta al compás. STRIKE: ±90 ms; BIEN: ±180 ms. Fuera de tiempo, falla y corta el combo.
+- Fuera de alcance, un corte al compás lanza una **onda ki**: 40% del daño de la espada, y mantiene el combo sin hacerlo crecer. El rival lanza las suyas cuando está lejos (altas o bajas, se esquivan como sus cortes); `W` o `S` al compás la devuelve. Solo la espada sube el multiplicador, así que acércate.
+- **Intercambio de golpes.** El rival nunca corta en dos pulsos seguidos, así que el pulso tras su corte es tuyo para responder. Tras cada intercambio de espadas responde en el pulso siguiente al próximo.
+- El rival también para: 20% de tus STRIKE y 35% de tus cortes BIEN en ×1, +10% por paso del multiplicador, hasta 70%. Un corte parado te empuja hacia atrás; un BIEN parado además corta el combo.
+- El rival lee el combate: con ventaja de vida se acerca a usar la espada; en desventaja, se aleja y confía en el ki.
+- Un golpe que acierta hace retroceder al golpeado: un STRIKE empuja más lejos al rival, una onda ki apenas; los cortes del rival también te empujan.
+- **Una acción por pulso.** Un corte o una parada gastan el pulso; una segunda en el mismo pulso falla (PULSO USADO), y un segundo corte además corta el combo. Caminar con `A` / `D`, saltar y agacharse son libres.
+- Entre ataques ambos samuráis bailan al compás: se hunden en cada pulso, se mecen de lado a lado, la espada oscila y dan pasos al caminar. Ataques, paradas y ki mantienen sus propias poses.
+- El daño se ve: al bajar la vida se abren cortes y rasgaduras en el gi, el hakama se deshilacha y la cara se llena de rasguños y moretones. Pasado el 40% de daño el samurái se cansa: en reposo jadea, se encorva, entrecierra el ojo, baja la espada y suda.
+- Los golpes de espada y las paradas destellan la pantalla, congelan el cuadro un instante y la sacuden.
+- La pista de ritmo de arriba lleva cada pulso a la zona de golpe (su marco es la ventana BIEN, su centro la de STRIKE). Una espada rosa es tu pulso para cortar con `ESPACIO`; un escudo dorado sobre rojo es el corte del rival. Un aviso a su izquierda dice qué pide el próximo pulso, y un "!" dorado sobre el rival más "W / S" sobre ti anuncian su corte. Los pulsos usados se vuelven blancos, y una cruz roja marca un fallo o un golpe recibido. Cada pulso acertado lanza chispas desde la zona; el multiplicador agranda la explosión, hace brillar la zona en su color, muestra una insignia ×N que se hincha al subir y desde ×3 hace subir brasas desde la zona. `W` o `S` sobre él lo para, alto o bajo; en otro momento solo saltan o agachan.
+- Cada STRIKE seguido suma al combo; cada 4 sube el multiplicador, hasta ×4, en daño y puntos. Desde ×2 tu samurái brilla azul, luego dorado, luego rosa. El combo sigue de un combate al siguiente.
+- Cada paso del multiplicador endurece al rival: +10 BPM en el compás propio (de 100 a 130), más cortes y +4 de daño por corte (de 16 a 28).
+- **⧉ Pestaña** funciona como en el juego de ritmo: la pestaña se escucha 2,2 s después, con su video pixelado en el horizonte. Cada ataque de su música se vuelve un pulso en la pista, así que cortas, paras y esquivas sobre la música misma. **Sensibilidad** (80% por defecto) fija qué tan suave puede ser un ataque para contar; súbela si aparecen pocos pulsos. Con pestaña el tempo es el de la música; el rival igual se vuelve más agresivo y pega más fuerte. Si se deja de compartir, sigue el metrónomo.
+- Cada samurái tiene 250 de vida, así que un combate dura unos 30 s. No tiene límite de tiempo: termina solo cuando alguien cae, con un destello de K.O. y una pausa mientras el perdedor se tambalea, se arrodilla y cae y el ganador alza la espada; si ambos caen a la vez no cuenta para nadie.
+
 ## Límites
 
 La detección de tono usa autocorrelación y funciona mejor con una voz o un instrumento claro (200–1000 Hz para la melodía); las mezclas densas dan menos notas con tono. El bajo se quita con un filtro, no con separación real de instrumentos; la batería y otros golpes sin tono no generan notas. El BPM necesita al menos cinco ataques regulares. El retraso de 2,2 s es fijo; se compensa la latencia de salida que informa el navegador, pero quizá no la de auriculares Bluetooth.
@@ -60,6 +81,8 @@ La detección de tono usa autocorrelación y funciona mejor con una voz o un ins
 | Archivo | Contiene |
 | --- | --- |
 | `game.js` | Bucle del juego, entrada, dibujo, sesiones de pestaña y archivo, video retrasado |
+| `duel.html`, `duel.js` | Duelo samurái: combates sin fin sobre un compás propio o una pestaña |
+| `duel-rules.js` | Reglas de tiempo, combo, dificultad y combates del duelo |
 | `audio.js` | Tono, pulso, registros, seguimiento de notas |
 | `sustain.js` | Reglas de notas sostenidas |
 | `hype.js` | Mensajes de strike y racha |

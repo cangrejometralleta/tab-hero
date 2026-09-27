@@ -28,7 +28,13 @@ export const messages={
     tooQuiet:'Turn the volume up or raise sensitivity.',attack:'Attack detected',listening:'Listening',
     noteNames:['C','C♯','D','D♯','E','F','F♯','G','G♯','A','A♯','B'],demoNotes:['C','E','G','A'],
     strikes:['STRIKE!','DOUBLE STRIKE!','TRIPLE STRIKE!!','UNSTOPPABLE!!','ON FIRE!!!','LEGEND!!!','GOD MODE!!!!'],
-    milestones:{10:'10 IN A ROW!',25:'25! WHAT A STREAK!',50:'50! DON\'T STOP!',100:'100! INCREDIBLE!'},hundreds:'{n}! LEGENDARY!'
+    milestones:{10:'10 IN A ROW!',25:'25! WHAT A STREAK!',50:'50! DON\'T STOP!',100:'100! INCREDIBLE!'},hundreds:'{n}! LEGENDARY!',
+    duel:'⚔ Duel',duelTitle:'Tab Hero · Duel',duelTag:'Cut on the beat.',duelFight:'Fight',duelBack:'← Rhythm game',
+    duelHelp:'A / D walk, W jumps a low cut, S ducks a high one; either parries when pressed on the rival’s beat. SPACE cuts on the beat.',
+    duelIntro:'Bout after bout against the rival samurai. Consecutive STRIKEs raise the multiplier, and the rival gets tougher with it.',
+    duelArena:'Samurai duel: A/D move, W jump or parry, S duck or parry, SPACE strike',duelYou:'YOU',duelRival:'RIVAL',duelBout:'BOUT {n}',duelTally:'WINS {wins} · LOSSES {losses}',duelHarder:'RIVAL TOUGHER!',duelWave:'KI WAVE',duelDeflect:'DEFLECT!',duelBlocked:'BLOCKED!',duelParryKey:'parry',duelSpent:'BEAT SPENT',duelPromptCut:'CUT · SPACE',duelPromptParry:'PARRY · W / S',duelCutKey:'cut',duelPadLeft:'Walk left: A',duelPadRight:'Walk right: D',duelPadJump:'Parry on the beat, or jump: W',duelPadParry:'Parry on the beat, or duck: S',duelPadCut:'Cut on the beat: SPACE',duelStopped:'Duel stopped. Your tally is kept.',duelTime:'Session',
+    duelParry:'PARRY!',duelDodge:'DODGE!',duelHit:'HIT!',duelWon:'YOU WIN',duelLost:'YOU LOSE',duelDraw:'DRAW',
+    duelFooter:'Listen. Cut. Repeat.',duelCombo:'Combo',duelScore:'Score',duelTab:'The tab plays here 2.2 s late, its video on the horizon: each of its beats reaches the ring as it sounds.'
   },
   es:{
     tag:'Tus pestañas tienen ritmo.',noSource:'Sin fuente de audio',controls:'Controles de la sesión',
@@ -58,7 +64,13 @@ export const messages={
     tooQuiet:'Sube el volumen o la sensibilidad.',attack:'Ataque detectado',listening:'Escuchando',
     noteNames:['Do','Do♯','Re','Re♯','Mi','Fa','Fa♯','Sol','Sol♯','La','La♯','Si'],demoNotes:['Do','Mi','Sol','La'],
     strikes:['STRIKE!','STRIKE DOBLE!','TRIPLE STRIKE!!','IMPARABLE!!','EN LLAMAS!!!','LEYENDA!!!','MODO DIOS!!!!'],
-    milestones:{10:'¡10 SEGUIDAS!',25:'¡25! ¡QUÉ RACHA!',50:'¡50! ¡NO PARES!',100:'¡100! ¡INCREÍBLE!'},hundreds:'¡{n}! ¡HISTÓRICO!'
+    milestones:{10:'¡10 SEGUIDAS!',25:'¡25! ¡QUÉ RACHA!',50:'¡50! ¡NO PARES!',100:'¡100! ¡INCREÍBLE!'},hundreds:'¡{n}! ¡HISTÓRICO!',
+    duel:'⚔ Duelo',duelTitle:'Tab Hero · Duelo',duelTag:'Corta al compás.',duelFight:'Pelear',duelBack:'← Juego de ritmo',
+    duelHelp:'A / D camina, W salta un corte bajo, S se agacha ante uno alto; cualquiera de las dos para si la pulsas en el pulso del rival. ESPACIO corta al compás.',
+    duelIntro:'Combate tras combate contra el samurái rival. Los STRIKE seguidos suben el multiplicador, y con él el rival se vuelve más duro.',
+    duelArena:'Duelo samurái: A/D moverse, W saltar o parar, S agacharse o parar, ESPACIO golpear',duelYou:'TÚ',duelRival:'RIVAL',duelBout:'COMBATE {n}',duelTally:'VICTORIAS {wins} · DERROTAS {losses}',duelHarder:'¡RIVAL MÁS DURO!',duelWave:'ONDA KI',duelDeflect:'¡DESVÍO!',duelBlocked:'¡BLOQUEADO!',duelParryKey:'parar',duelSpent:'PULSO USADO',duelPromptCut:'CORTA · ESPACIO',duelPromptParry:'PARA · W / S',duelCutKey:'cortar',duelPadLeft:'Caminar a la izquierda: A',duelPadRight:'Caminar a la derecha: D',duelPadJump:'Parar al compás, o saltar: W',duelPadParry:'Parar al compás, o agacharse: S',duelPadCut:'Cortar al compás: ESPACIO',duelStopped:'Duelo detenido. Tu marcador se conserva.',duelTime:'Sesión',
+    duelParry:'¡PARADA!',duelDodge:'¡ESQUIVA!',duelHit:'¡GOLPE!',duelWon:'GANASTE',duelLost:'PERDISTE',duelDraw:'EMPATE',
+    duelFooter:'Escucha. Corta. Repite.',duelCombo:'Combo',duelScore:'Puntos',duelTab:'La pestaña suena aquí 2,2 s después, con su video en el horizonte: cada pulso llega al círculo cuando suena.'
   }
 };
 let current='en';
