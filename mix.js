@@ -2,7 +2,7 @@ import {PulseTracker,bandEnergy,listening} from './audio.js';
 import {lang,setLang,t} from './i18n.js';
 
 const $=id=>document.getElementById(id),baseDelay=1.4,splitHz=180;
-const minRoleBeats=1,maxRoleBeats=32,defaultRoleBeats=8;
+const minRoleBeats=1,maxRoleBeats=32,defaultRoleBeats=16;
 const roleInterval=$('roleInterval'),roleIntervalValue=$('roleIntervalValue');
 let audio=null,tracks=[null,null],playing=false,stopping=false,aligned=false,role=0,masterBeats=0,lastAnalysis=0,lastNormalization=0,lastRephase=0,roleChangeAt=Infinity,roleChange=null,lastStatus='mixInstructions';
 const detectors=[new PulseTracker(),new PulseTracker()];
