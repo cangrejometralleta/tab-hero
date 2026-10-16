@@ -3,10 +3,12 @@ import {lang,setLang,t} from './i18n.js';
 
 const $=id=>document.getElementById(id),baseDelay=1.4,splitHz=180;
 const minRoleBeats=1,maxRoleBeats=32,defaultRoleBeats=16;
+const videoFrameCount=100,videoFrameWidth=320,videoFrameHeight=180,videoFrameStep=1000/30;
 const roleInterval=$('roleInterval'),roleIntervalValue=$('roleIntervalValue');
 let audio=null,tracks=[null,null],playing=false,stopping=false,aligned=false,role=0,masterBeats=0,lastAnalysis=0,lastNormalization=0,lastRephase=0,roleChangeAt=Infinity,roleChange=null,lastStatus='mixInstructions';
 const detectors=[new PulseTracker(),new PulseTracker()];
 const streams=[null,null];
+const videoStops=[null,null];
 
 $('lang').onclick=()=>{
   setLang(lang()==='en'?'es':'en');document.title=t('mixTitle');announce(lastStatus);
@@ -34,6 +36,47 @@ function createTrack(index,stream){
   return {source,analyser,delays,delayGains,delayIndex:0,delayCorrection:0,level,bass,bassLimiter,melody,spectrum:new Float32Array(analyser.frequencyBinCount),waveform:new Float32Array(analyser.fftSize),index,pulses:detectors[index],events:[],bpm:null,rms:0,rmsAt:audio.currentTime};
 }
 
+function createVideoFrames(){
+  return Array.from({length:videoFrameCount},()=>{
+    const frame=document.createElement('canvas');
+    frame.width=videoFrameWidth;frame.height=videoFrameHeight;
+    return {canvas:frame,context:frame.getContext('2d',{alpha:false}),time:-Infinity};
+  });
+}
+
+function captureVideoFrame(video,frame,time){
+  frame.context.drawImage(video,0,0,videoFrameWidth,videoFrameHeight);frame.time=time;
+}
+
+function findDelayedFrame(frames,time){
+  let delayed=null;
+  for(const frame of frames)if(Number.isFinite(frame.time)&&frame.time<=time&&(!delayed||frame.time>delayed.time))delayed=frame;
+  return delayed;
+}
+
+function videoDelaySeconds(track){
+  return baseDelay+track.delayCorrection+(audio?.outputLatency??audio?.baseLatency??0);
+}
+
+function startVideoDelay(video,canvas,track){
+  const output=canvas.getContext('2d'),frames=createVideoFrames();
+  const usesVideoFrames=typeof video.requestVideoFrameCallback==='function';
+  const schedule=usesVideoFrames?callback=>video.requestVideoFrameCallback(callback):callback=>requestAnimationFrame(callback);
+  const cancel=usesVideoFrames?id=>video.cancelVideoFrameCallback(id):id=>cancelAnimationFrame(id);
+  let cursor=0,lastCapture=-Infinity,lastVideoTime=-1,requestId;
+  function renderFrame(now){
+    if(video.readyState>=2&&video.currentTime!==lastVideoTime&&now-lastCapture>=videoFrameStep){
+      const frame=frames[cursor];
+      captureVideoFrame(video,frame,now);cursor=(cursor+1)%frames.length;lastCapture=now;lastVideoTime=video.currentTime;
+    }
+    const frameTime=now-videoDelaySeconds(track)*1000,delayed=findDelayedFrame(frames,frameTime);
+    if(delayed)output.drawImage(delayed.canvas,0,0,canvas.width,canvas.height);
+    requestId=schedule(renderFrame);
+  }
+  requestId=schedule(renderFrame);
+  return ()=>{cancel(requestId);output.clearRect(0,0,canvas.width,canvas.height);};
+}
+
 async function connect(index){
   const letter=index?'B':'A',button=$(`connect${letter}`);button.disabled=true;
   try{
@@ -42,7 +85,11 @@ async function connect(index){
     const audioTrack=incoming.getAudioTracks()[0],videoTrack=incoming.getVideoTracks()[0];
     if(!audioTrack){incoming.getTracks().forEach(track=>track.stop());throw new Error('no-audio');}
     streams[index]=incoming;audio??=new AudioContext();await audio.resume();tracks[index]=createTrack(index,new MediaStream([audioTrack]));
-    if(videoTrack){const video=$(`video${letter}`);video.srcObject=new MediaStream([videoTrack]);video.play().catch(()=>{});video.parentElement.classList.add('has-video');}
+    if(videoTrack){
+      const video=$(`video${letter}`),canvas=$(`preview${letter}`);
+      video.srcObject=new MediaStream([videoTrack]);video.play().catch(()=>{});
+      videoStops[index]=startVideoDelay(video,canvas,tracks[index]);video.parentElement.classList.add('has-video');
+    }
     audioTrack.onended=()=>{if(!stopping)endSession('mixShareEnded');};
     $(`name${letter}`).textContent=t('mixConnected');button.textContent=t('mixConnectedButton');
     $('source').textContent=t('mixTabsConnected');
@@ -177,8 +224,9 @@ requestAnimationFrame(frame);
 
 function endSession(message='mixStopped'){
   if(stopping)return;stopping=true;playing=false;aligned=false;lastRephase=0;roleChange=null;roleChangeAt=Infinity;
+  videoStops.forEach(stop=>stop?.());videoStops[0]=videoStops[1]=null;
   streams.forEach(stream=>stream?.getTracks().forEach(track=>{track.onended=null;track.stop();}));
-  ['A','B'].forEach(letter=>{const video=$(`video${letter}`);video.pause();video.srcObject=null;video.parentElement.classList.remove('has-video');});
+  ['A','B'].forEach(letter=>{const video=$(`video${letter}`),canvas=$(`preview${letter}`);video.pause();video.srcObject=null;canvas.getContext('2d').clearRect(0,0,canvas.width,canvas.height);video.parentElement.classList.remove('has-video');});
   streams[0]=streams[1]=null;tracks[0]=tracks[1]=null;detectors.forEach(detector=>detector.reset());
   if(audio){audio.close().catch(()=>{});audio=null;}
   ['A','B'].forEach(letter=>{$(`name${letter}`).textContent=t('mixUnconnected');$(`connect${letter}`).disabled=false;$(`connect${letter}`).textContent=t(letter==='A'?'mixConnectA':'mixConnectB');$(`bpm${letter}`).innerHTML='— <small>BPM</small>';$(`meter${letter}`).style.width='0%';});
