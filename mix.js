@@ -24,13 +24,14 @@ function createTrack(index,stream){
   analyser.fftSize=4096;analyser.smoothingTimeConstant=0;
   const delays=[audio.createDelay(3),audio.createDelay(3)],delayGains=[audio.createGain(),audio.createGain()];
   const level=audio.createGain(),low=audio.createBiquadFilter(),high=audio.createBiquadFilter();
-  const bass=audio.createGain(),melody=audio.createGain();
+  const bass=audio.createGain(),bassLimiter=audio.createDynamicsCompressor(),melody=audio.createGain();
   delays.forEach(delay=>delay.delayTime.value=baseDelay);delayGains[0].gain.value=1;delayGains[1].gain.value=0;
   low.type='lowpass';low.frequency.value=splitHz;low.Q.value=.65;
   high.type='highpass';high.frequency.value=splitHz;high.Q.value=.65;bass.gain.value=0;melody.gain.value=0;
+  bassLimiter.threshold.value=-6;bassLimiter.knee.value=3;bassLimiter.ratio.value=16;bassLimiter.attack.value=.003;bassLimiter.release.value=.15;
   source.connect(analyser);delays.forEach((delay,index)=>source.connect(delay).connect(delayGains[index]).connect(level));
-  level.connect(low).connect(bass).connect(audio.destination);level.connect(high).connect(melody).connect(audio.destination);
-  return {source,analyser,delays,delayGains,delayIndex:0,delayCorrection:0,level,bass,melody,spectrum:new Float32Array(analyser.frequencyBinCount),waveform:new Float32Array(analyser.fftSize),index,pulses:detectors[index],events:[],bpm:null,rms:0,rmsAt:audio.currentTime};
+  level.connect(low).connect(bass).connect(bassLimiter).connect(audio.destination);level.connect(high).connect(melody).connect(audio.destination);
+  return {source,analyser,delays,delayGains,delayIndex:0,delayCorrection:0,level,bass,bassLimiter,melody,spectrum:new Float32Array(analyser.frequencyBinCount),waveform:new Float32Array(analyser.fftSize),index,pulses:detectors[index],events:[],bpm:null,rms:0,rmsAt:audio.currentTime};
 }
 
 async function connect(index){
@@ -58,6 +59,11 @@ async function connect(index){
 function announce(key){lastStatus=key;$('mixStatus').textContent=t(key);}
 $('connectA').onclick=()=>connect(0);$('connectB').onclick=()=>connect(1);
 $('sensitivity').oninput=()=>{$('mixSensitivityValue').textContent=`${$('sensitivity').value}%`;};
+$('bassBoost').oninput=()=>{
+  const decibels=Number($('bassBoost').value),bass=tracks[role];
+  $('bassBoostValue').textContent=decibels?`+${decibels} dB`:'0 dB';
+  if(playing&&bass)bass.gain.setTargetAtTime(Math.pow(10,decibels/20),audio.currentTime,.04);
+};
 
 function roleEveryBeats(){
   const entered=Number(roleInterval.value);
@@ -73,9 +79,10 @@ function setRole(next,at=audio?.currentTime??0){
   role=next;
   paintRole();
   if(!tracks[0]||!tracks[1]||!playing)return;
-  const aBass=next===0?1:0,bBass=next===1?1:0;
-  tracks[0].bass.gain.setTargetAtTime(aBass,at,.025);tracks[0].melody.gain.setTargetAtTime(1-aBass,at,.025);
-  tracks[1].bass.gain.setTargetAtTime(bBass,at,.025);tracks[1].melody.gain.setTargetAtTime(1-bBass,at,.025);
+  const boost=Math.pow(10,Number($('bassBoost').value)/20);
+  const aBass=next===0?boost:0,bBass=next===1?boost:0;
+  tracks[0].bass.gain.setTargetAtTime(aBass,at,.025);tracks[0].melody.gain.setTargetAtTime(next===0?0:1,at,.025);
+  tracks[1].bass.gain.setTargetAtTime(bBass,at,.025);tracks[1].melody.gain.setTargetAtTime(next===1?0:1,at,.025);
 }
 
 function paintRole(){
