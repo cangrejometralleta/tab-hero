@@ -74,7 +74,7 @@ Firefox y Safari no comparten audio de pestañas. Dejar de compartir, o pulsar *
 
 ## Mezcla
 
-**[♫ Mezcla](https://cangrejometralleta.github.io/tab-hero/mix.html)** toma el audio de dos pestañas compartidas. Conecta cada pestaña por separado, activa **Compartir audio de la pestaña** en ambos selectores y empieza la mezcla. El botón redondo central cambia qué pista aporta el bajo y cuál las frecuencias agudas; activa **Alternar roles cada** y define el intervalo en pulsos para automatizar el relevo. Este corte de frecuencias no separa la voz de una canción completa; para eso hacen falta pistas aisladas o un modelo específico de separación.
+**[♫ Mezcla](https://cangrejometralleta.github.io/tab-hero/mix.html)** toma el audio de dos pestañas compartidas. Conecta cada pestaña por separado, activa **Compartir audio de la pestaña** en ambos selectores y empieza la mezcla. El botón redondo central cambia qué pista aporta el bajo y cuál las frecuencias agudas; activa **Alternar roles cada** y define el intervalo en pulsos (8 por defecto) para automatizar el relevo. Este corte de frecuencias no separa la voz de una canción completa; para eso hacen falta pistas aisladas o un modelo específico de separación.
 
 La mezcla tiene unos 1,4 segundos de retraso para permitir la alineación. Ajusta la fase con fundidos cortos entre retrasos fijos, sin ralentizar los temas ni cambiar su tono. Si los BPM son distintos, puede haber desfase entre ajustes. Un ajuste lento del RMS empareja el volumen de ambas pestañas, con hasta 6 dB de ganancia por pista. El corte de frecuencias es aproximado, no separa instrumentos. Al terminar la mezcla se cierran ambas capturas y las pestañas recuperan su audio.
 
