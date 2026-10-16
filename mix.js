@@ -2,6 +2,8 @@ import {PulseTracker,bandEnergy,listening} from './audio.js';
 import {lang,setLang,t} from './i18n.js';
 
 const $=id=>document.getElementById(id),baseDelay=1.4,splitHz=180;
+const minRoleBeats=1,maxRoleBeats=32,defaultRoleBeats=4;
+const roleInterval=$('roleInterval');
 let audio=null,tracks=[null,null],playing=false,stopping=false,aligned=false,role=0,masterBeats=0,lastAnalysis=0,lastNormalization=0,lastRephase=0,roleChangeAt=Infinity,roleChange=null,lastStatus='mixInstructions';
 const detectors=[new PulseTracker(),new PulseTracker()];
 const streams=[null,null];
@@ -57,6 +59,16 @@ function announce(key){lastStatus=key;$('mixStatus').textContent=t(key);}
 $('connectA').onclick=()=>connect(0);$('connectB').onclick=()=>connect(1);
 $('sensitivity').oninput=()=>{$('mixSensitivityValue').textContent=`${$('sensitivity').value}%`;};
 
+function roleEveryBeats(){
+  const entered=Number(roleInterval.value);
+  if(!Number.isInteger(entered))return defaultRoleBeats;
+  return Math.min(maxRoleBeats,Math.max(minRoleBeats,entered));
+}
+
+function resetRoleCycle(){
+  masterBeats=0;roleChange=null;roleChangeAt=Infinity;
+}
+
 function setRole(next,at=audio?.currentTime??0){
   role=next;
   paintRole();
@@ -76,11 +88,15 @@ function paintRole(){
 }
 
 $('swapTracks').onclick=()=>{
-  masterBeats=0;roleChange=null;roleChangeAt=Infinity;
+  resetRoleCycle();
   setRole(role===0?1:0,audio?audio.currentTime+.03:0);
 };
+$('roleInterval').onchange=()=>{
+  roleInterval.value=roleEveryBeats();
+  resetRoleCycle();
+};
 $('alternateRoles').onchange=()=>{
-  if(!$('alternateRoles').checked){roleChange=null;roleChangeAt=Infinity;}
+  resetRoleCycle();
 };
 
 function startMix(){
@@ -146,7 +162,8 @@ function frame(){
   if(onsets.some(Boolean))estimateSync();
   if(onsets[0]){
     masterBeats++;
-    if($('alternateRoles').checked&&masterBeats%4===0){roleChange=role===0?1:0;roleChangeAt=time+baseDelay+tracks[0].delayCorrection;}
+    const interval=roleEveryBeats();
+    if($('alternateRoles').checked&&masterBeats%interval===0){roleChange=role===0?1:0;roleChangeAt=time+baseDelay+tracks[0].delayCorrection;}
   }
   if(roleChange!==null&&time>=roleChangeAt){setRole(roleChange,time+.02);roleChange=null;roleChangeAt=Infinity;}
 }
