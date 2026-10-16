@@ -74,7 +74,7 @@ Firefox and Safari cannot share tab audio. Stopping the share, or pressing **Sto
 
 ## Mix
 
-**[♫ Mix](https://cangrejometralleta.github.io/tab-hero/mix.html)** takes audio from two shared browser tabs. Connect each tab separately, enable **Share tab audio** in both pickers, then start the mix. The round center button swaps which track supplies the bass and which supplies the higher frequencies; enable **Auto rotate roles every** and set the interval in beats (8 by default) to automate the handoff. This frequency split does not isolate vocals from a full song; vocal separation needs isolated stems or a dedicated separation model.
+**[♫ Mix](https://cangrejometralleta.github.io/tab-hero/mix.html)** takes audio from two shared browser tabs. Connect each tab separately and enable **Share tab audio** in both pickers; the mix starts automatically when the second tab connects. The round center button swaps which track supplies the bass and which supplies the higher frequencies; enable **Auto rotate roles every** and set the interval in beats (8 by default) to automate the handoff. This frequency split does not isolate vocals from a full song; vocal separation needs isolated stems or a dedicated separation model.
 
 The mix is delayed about 1.4 seconds to make room for alignment. It phase-locks with short crossfades between fixed delay paths, so it never slows the tracks or bends their pitch. Different BPMs can still drift between corrections. Slow RMS matching balances the two tabs, with up to 6 dB of gain per track. The frequency split is approximate, not instrument separation. Stopping the mix ends both shares and restores the tabs.
 

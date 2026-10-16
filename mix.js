@@ -44,9 +44,9 @@ async function connect(index){
     if(videoTrack){const video=$(`video${letter}`);video.srcObject=new MediaStream([videoTrack]);video.play().catch(()=>{});video.parentElement.classList.add('has-video');}
     audioTrack.onended=()=>{if(!stopping)endSession('mixShareEnded');};
     $(`name${letter}`).textContent=t('mixConnected');button.textContent=t('mixConnectedButton');
-    $('source').textContent=t('mixTabsConnected');$('startMix').disabled=!(tracks[0]&&tracks[1]);
-    announce(tracks[0]&&tracks[1]?'mixBothReady':'mixSecondPrompt');
-    if(tracks[0]&&tracks[1])$('syncText').textContent=t('mixWaitingPulse');
+    $('source').textContent=t('mixTabsConnected');
+    if(tracks[0]&&tracks[1])startMix();
+    else announce('mixSecondPrompt');
   }catch(error){
     if(error.name==='NotAllowedError')announce('mixCancelled');
     else if(error.message==='no-audio')announce('mixNoAudio');
@@ -102,10 +102,9 @@ $('alternateRoles').onchange=()=>{
 function startMix(){
   if(!tracks[0]||!tracks[1])return;
   audio.resume();playing=true;aligned=false;lastRephase=0;masterBeats=0;roleChangeAt=Infinity;roleChange=null;setRole(role,audio.currentTime+.04);
-  $('startMix').disabled=true;$('stopMix').disabled=false;$('syncLight').classList.add('active');
+  $('stopMix').disabled=false;$('syncLight').classList.add('active');
   announce('mixAligning');$('syncText').textContent=t('mixWaitingPulse');
 }
-$('startMix').onclick=startMix;
 
 function estimateSync(){
   const [a,b]=tracks;if(!a?.bpm||!b?.bpm||!a.events.length||!b.events.length)return;
@@ -176,7 +175,7 @@ function endSession(message='mixStopped'){
   streams[0]=streams[1]=null;tracks[0]=tracks[1]=null;detectors.forEach(detector=>detector.reset());
   if(audio){audio.close().catch(()=>{});audio=null;}
   ['A','B'].forEach(letter=>{$(`name${letter}`).textContent=t('mixUnconnected');$(`connect${letter}`).disabled=false;$(`connect${letter}`).textContent=t(letter==='A'?'mixConnectA':'mixConnectB');$(`bpm${letter}`).innerHTML='— <small>BPM</small>';$(`meter${letter}`).style.width='0%';});
-  $('startMix').disabled=true;$('stopMix').disabled=true;$('syncLight').className='';$('syncText').textContent=t('mixNeedTracks');$('source').textContent=t('mixNoTabs');paintRole();announce(message);
+  $('stopMix').disabled=true;$('syncLight').className='';$('syncText').textContent=t('mixNeedTracks');$('source').textContent=t('mixNoTabs');paintRole();announce(message);
   stopping=false;
 }
 $('stopMix').onclick=()=>endSession();
