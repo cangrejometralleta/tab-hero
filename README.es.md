@@ -72,6 +72,12 @@ Firefox y Safari no comparten audio de pestañas. Dejar de compartir, o pulsar *
 - **⧉ Pestaña** funciona como en el juego de ritmo: la pestaña se escucha 2,2 s después, con su video pixelado en el horizonte. Cada ataque de su música se vuelve un pulso en la pista, así que cortas, paras y esquivas sobre la música misma. **Sensibilidad** (80% por defecto) fija qué tan suave puede ser un ataque para contar; súbela si aparecen pocos pulsos. Con pestaña el tempo es el de la música; el rival igual se vuelve más agresivo y pega más fuerte. Si se deja de compartir, sigue el metrónomo.
 - Cada samurái tiene 250 de vida, así que un combate dura unos 30 s. No tiene límite de tiempo: termina solo cuando alguien cae, con un destello de K.O. y una pausa mientras el perdedor se tambalea, se arrodilla y cae y el ganador alza la espada; si ambos caen a la vez no cuenta para nadie.
 
+## Mezcla
+
+**[♫ Mezcla](https://cangrejometralleta.github.io/tab-hero/mix.html)** toma el audio de dos pestañas compartidas. Conecta cada pestaña por separado, activa **Compartir audio de la pestaña** en ambos selectores y empieza la mezcla. El botón redondo central cambia qué pista aporta el bajo y cuál las frecuencias agudas; activa **Alternar roles cada 4 pulsos** para automatizar el relevo. Este corte de frecuencias no separa la voz de una canción completa; para eso hacen falta pistas aisladas o un modelo específico de separación.
+
+La mezcla tiene unos 1,4 segundos de retraso para permitir la alineación. Ajusta la fase con fundidos cortos entre retrasos fijos, sin ralentizar los temas ni cambiar su tono. Si los BPM son distintos, puede haber desfase entre ajustes. Un ajuste lento del RMS empareja el volumen de ambas pestañas, con hasta 6 dB de ganancia por pista. El corte de frecuencias es aproximado, no separa instrumentos. Al terminar la mezcla se cierran ambas capturas y las pestañas recuperan su audio.
+
 ## Límites
 
 La detección de tono usa autocorrelación y funciona mejor con una voz o un instrumento claro (200–1000 Hz para la melodía); las mezclas densas dan menos notas con tono. El bajo se quita con un filtro, no con separación real de instrumentos; la batería y otros golpes sin tono no generan notas. El BPM necesita al menos cinco ataques regulares. El retraso de 2,2 s es fijo; se compensa la latencia de salida que informa el navegador, pero quizá no la de auriculares Bluetooth.
@@ -83,6 +89,8 @@ La detección de tono usa autocorrelación y funciona mejor con una voz o un ins
 | `game.js` | Bucle del juego, entrada, dibujo, sesiones de pestaña y archivo, video retrasado |
 | `duel.html`, `duel.js` | Duelo samurái: combates sin fin sobre un compás propio o una pestaña |
 | `duel-rules.js` | Reglas de tiempo, combo, dificultad y combates del duelo |
+| `duel-sound.js` | Sonidos de espada del duelo: tonos, silbidos y resonancias |
+| `mix.html`, `mix.js` | Mezclador de dos pestañas: alineación de pulsos y alternancia de bajos / melodías |
 | `audio.js` | Tono, pulso, registros, seguimiento de notas |
 | `sustain.js` | Reglas de notas sostenidas |
 | `hype.js` | Mensajes de strike y racha |

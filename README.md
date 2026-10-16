@@ -72,6 +72,12 @@ Firefox and Safari cannot share tab audio. Stopping the share, or pressing **Sto
 - **⧉ Tab** works as in the rhythm game: the tab is heard 2.2 s late, its pixelated video on the horizon. Each attack in its music becomes a beat on the track, so you cut, parry and dodge on the music itself. **Sensitivity** (80% by default) sets how soft an attack still counts; raise it if few beats appear. With a tab the tempo is the music's; the rival still gets bolder and harder-hitting. If sharing stops, the metronome takes over.
 - Each samurai has 250 health, so a bout runs about 30 s. It has no time limit: it ends only when someone falls, with a K.O. flash and a pause while the loser staggers, kneels and falls and the winner raises the blade; if both fall together it counts as neither.
 
+## Mix
+
+**[♫ Mix](https://cangrejometralleta.github.io/tab-hero/mix.html)** takes audio from two shared browser tabs. Connect each tab separately, enable **Share tab audio** in both pickers, then start the mix. The round center button swaps which track supplies the bass and which supplies the higher frequencies; turn on **Swap roles every 4 beats** to automate that handoff. This frequency split does not isolate vocals from a full song; vocal separation needs isolated stems or a dedicated separation model.
+
+The mix is delayed about 1.4 seconds to make room for alignment. It phase-locks with short crossfades between fixed delay paths, so it never slows the tracks or bends their pitch. Different BPMs can still drift between corrections. Slow RMS matching balances the two tabs, with up to 6 dB of gain per track. The frequency split is approximate, not instrument separation. Stopping the mix ends both shares and restores the tabs.
+
 ## Limits
 
 Pitch detection uses autocorrelation and works best with one clear voice or instrument (200–1000 Hz for the melody); dense mixes give fewer pitched notes. The bass is removed by a filter, not true instrument separation; drums and other unpitched hits make no notes. The BPM needs at least five regular attacks. The 2.2 s delay is fixed; speaker latency reported by the browser is compensated, Bluetooth delay may not be.
@@ -83,6 +89,8 @@ Pitch detection uses autocorrelation and works best with one clear voice or inst
 | `game.js` | Game loop, input, drawing, tab and file sessions, delayed video |
 | `duel.html`, `duel.js` | Samurai duel: endless bouts on a built-in beat or a tab |
 | `duel-rules.js` | Duel timing, combo, difficulty and bout rules |
+| `duel-sound.js` | Duel blade sounds: tones, swishes and rings |
+| `mix.html`, `mix.js` | Two-tab mixer: pulse alignment and alternating bass / melody bands |
 | `audio.js` | Pitch, pulse, bands, note tracking |
 | `sustain.js` | Held-note rules |
 | `hype.js` | Strike and streak messages |
