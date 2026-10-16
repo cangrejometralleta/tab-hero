@@ -2,6 +2,7 @@ import {grade,nearestBeat,strikeOutcome,boutWinner,difficulty,waveOutcome,waveSh
 import {strikeText} from './hype.js';
 import {t,lang,setLang} from './i18n.js';
 import {PulseTracker,bandEnergy,listening} from './audio.js';
+import {createDuelSound} from './duel-sound.js';
 const $=id=>document.getElementById(id),canvas=$('duel'),ctx=canvas.getContext('2d');
 // The stage is drawn in a fixed 900×500 world and scaled to fit the arena.
 const W=900,H=500,ground=410,ringX=300,trackSpeed=220,pixel=3,horizon=ground-70;
@@ -16,30 +17,7 @@ new ResizeObserver(()=>{const r=canvas.getBoundingClientRect(),dpr=Math.min(devi
 const now=()=>ac?ac.currentTime:0,announce=text=>{$('status').textContent=text;},latency=()=>ac?.outputLatency||ac?.baseLatency||0;
 function say(text,color='#ecf1ff',x=W/2,y=200,size=34){labels.push({text,color,x,y,size,born:now()});}
 
-function tone(time,freq,to,length,volume,type='sine'){
-  const osc=ac.createOscillator(),gain=ac.createGain();osc.type=type;osc.frequency.setValueAtTime(freq,time);osc.frequency.exponentialRampToValueAtTime(to,time+length);
-  gain.gain.setValueAtTime(volume,time);gain.gain.exponentialRampToValueAtTime(.001,time+length);osc.connect(gain).connect(ac.destination);osc.start(Math.max(time,now()));osc.stop(Math.max(time,now())+length);
-}
-// Blade sounds are filtered noise and a few inharmonic partials: quiet, short, and pitched to say how the cut landed.
-let noise;
-function swish(freq,to,length,volume,q=1.2){
-  noise??=(()=>{const b=ac.createBuffer(1,ac.sampleRate,ac.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;return b;})();
-  const src=ac.createBufferSource(),filter=ac.createBiquadFilter(),gain=ac.createGain(),at=now();src.buffer=noise;filter.type='bandpass';filter.Q.value=q;
-  filter.frequency.setValueAtTime(freq,at);filter.frequency.exponentialRampToValueAtTime(to,at+length);
-  gain.gain.setValueAtTime(.001,at);gain.gain.exponentialRampToValueAtTime(volume,at+length*.3);gain.gain.exponentialRampToValueAtTime(.001,at+length);
-  src.connect(filter).connect(gain).connect(ac.destination);src.start(at,Math.random()*.5);src.stop(at+length);
-}
-const ring=(base,volume,length=.35)=>[1,2.76,5.4].forEach((k,i)=>tone(now(),base*k,base*k*.995,length/(i+1),volume/(i+1)));
-// A STRIKE rings brighter as the multiplier climbs; a GOOD is a duller ring.
-const sounds={
-  strike:()=>{swish(1800,6000,.14,.14);ring(1320*2**((multiplier(chain)-1)/12*2),.035);},
-  good:()=>{swish(1500,4000,.14,.1);ring(990,.02,.2);},
-  miss:()=>{swish(900,350,.2,.08,.8);tone(now(),196,185,.18,.05,'triangle');tone(now(),208,196,.18,.035,'triangle');},
-  parry:()=>{swish(2500,7000,.1,.1);ring(1760,.05,.5);ring(2349,.025,.4);},
-  dodge:()=>swish(700,2600,.16,.07,2),
-  wave:()=>{swish(300,1400,.3,.09,3);tone(now(),220,660,.25,.04);},
-  hurt:()=>{swish(600,200,.22,.12,.7);tone(now(),110,60,.2,.18);}
-};
+const {tone,sounds}=createDuelSound(()=>ac);
 
 // Every beat is known ahead: the metronome lays its grid 3 s out, a tab's onsets arrive 2.2 s after they are heard.
 function addBeat(time,count=0){
@@ -133,7 +111,7 @@ function cut(){
     sounds.parry();burst((player.x+enemy.x)/2,ground-110,'#ffd078',1.4);clash('#ffd078');say(t('duelBlocked'),'#ffd078',enemy.x,230,28);riposte();return;
   }
   beat.result='cut';const o=strikeOutcome(g,chain);gain(o);trackBurst(g==='strike'?'#ff73b5':'#70cfff',g);enemy.hp-=o.damage;riposte();
-  enemy.pose='hurt';enemy.until=time+.3;knockRival(g==='strike'?70:40);sounds[g]();burst(enemy.x-10,ground-95,g==='strike'?'#ff73b5':'#70cfff',g==='strike'?1.6:1.2);if(g==='strike')clash('#ffffff');
+  enemy.pose='hurt';enemy.until=time+.3;knockRival(g==='strike'?70:40);sounds[g](multiplier(chain));burst(enemy.x-10,ground-95,g==='strike'?'#ff73b5':'#70cfff',g==='strike'?1.6:1.2);if(g==='strike')clash('#ffffff');
   say(g==='strike'?strikeText(chain):t('good'),g==='strike'?'#ff73b5':'#70cfff',W/2,160,g==='strike'?30:24);
 }
 function gain(o){
