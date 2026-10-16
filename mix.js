@@ -87,7 +87,7 @@ async function connect(index){
     streams[index]=incoming;audio??=new AudioContext();await audio.resume();tracks[index]=createTrack(index,new MediaStream([audioTrack]));
     if(videoTrack){
       const video=$(`video${letter}`),canvas=$(`preview${letter}`);
-      video.srcObject=new MediaStream([videoTrack]);video.play().catch(()=>{});
+      video.muted=true;video.srcObject=new MediaStream([audioTrack,videoTrack]);video.play().catch(()=>{});
       videoStops[index]=startVideoDelay(video,canvas,tracks[index]);video.parentElement.classList.add('has-video');
     }
     audioTrack.onended=()=>{if(!stopping)endSession('mixShareEnded');};
