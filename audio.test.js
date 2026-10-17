@@ -1,13 +1,116 @@
-import {test} from 'node:test';import assert from 'node:assert/strict';import {detectPitch,PulseTracker} from './audio.js';
-test('detects tonal frequencies across sample rates',()=>{for(const rate of [44100,48000])for(const hz of [110,220,440,880]){const data=Float32Array.from({length:2048},(_,i)=>.2*Math.sin(2*Math.PI*hz*i/rate));assert.ok(Math.abs(detectPitch(data,rate).hz-hz)<3);}});
-test('silence has no pitch',()=>assert.equal(detectPitch(new Float32Array(2048),48000).hz,null));
-test('steady onsets estimate 120 BPM and expire in silence',()=>{const p=new PulseTracker();for(let i=0;i<600;i++)p.update(i%50===0?.3:.001,i/100,.02);assert.equal(p.bpm,120);p.update(0,30,.02);assert.equal(p.bpm,null);});
-test('sustained bass does not retrigger notes',()=>{const p=new PulseTracker();let count=0;for(let i=0;i<400;i++){p.update(.2,i*.025,.01);count+=Number(p.onset);}assert.equal(count,1);});
-test('repeated bass attacks trigger even without pitch changes',()=>{const p=new PulseTracker();let count=0;for(let i=0;i<240;i++){p.update(i%20<4?.2:.001,i*.025,.01);count+=Number(p.onset);}assert.equal(count,12);assert.equal(p.bpm,120);});
-test('bass band excludes treble energy at both sample rates',async()=>{const {bassEnergy}=await import('./audio.js');for(const rate of [44100,48000]){const bins=new Float32Array(2048).fill(-Infinity);bins[Math.round(2000*4096/rate)]=-10;assert.equal(bassEnergy(bins,rate,4096),0);bins[Math.round(80*4096/rate)]=-20;assert.ok(Math.abs(bassEnergy(bins,rate,4096)-.1)<.0001);}});
-test('melody accepts quiet tones without accepting silence',()=>{const data=Float32Array.from({length:2048},(_,i)=>.004*Math.sin(2*Math.PI*220*i/48000));assert.equal(detectPitch(data,48000).hz,null);assert.ok(Math.abs(detectPitch(data,48000,{minRms:.001,clarity:.7}).hz-220)<3);assert.equal(detectPitch(new Float32Array(2048),48000,{minRms:.001,clarity:.7}).hz,null);});
-const lanes=made=>made.map(n=>n.lane);
-test('only pitched melody makes notes; unpitched hits make none',async()=>{const {NoteTracker}=await import('./audio.js');const tracker=new NoteTracker();assert.deepEqual(lanes(tracker.update(null,true,0)),[]);assert.deepEqual(lanes(tracker.update(440,true,.5)),[1]);});
-test('melody contour walks all three frets: steps move one, leaps two, repeats stay',async()=>{const {NoteTracker}=await import('./audio.js');const tracker=new NoteTracker();const at=(hz,t)=>{tracker.update(hz,false,t);return lanes(tracker.update(hz,false,t+.05));};assert.deepEqual(lanes(tracker.update(440,true,0)),[1]);assert.deepEqual(at(392,.5),[0]);assert.deepEqual(lanes(tracker.update(392,true,1)),[0]);assert.deepEqual(at(587,1.5),[2]);assert.deepEqual(at(523,2),[1]);assert.deepEqual(at(220,2.5),[0]);});
-test('melody ignores low pitches when given a floor',()=>{const data=Float32Array.from({length:2048},(_,i)=>.2*Math.sin(2*Math.PI*110*i/48000));assert.equal(detectPitch(data,48000,{minHz:198}).hz,null);});
-test('a melody over a chord still gives its pitch at the game clarity',()=>{const rate=48000,hz=m=>440*2**((m-69)/12);const data=Float32Array.from({length:2048},(_,i)=>{const t=i/rate;let s=0;for(let h=1;h<=6;h++)s+=.25*Math.sin(2*Math.PI*hz(72)*h*t)/h;for(const m of [60,64,67])s+=.15*Math.sin(2*Math.PI*hz(m)*t);return s;});assert.equal(detectPitch(data,rate,{clarity:.7,minHz:198}).hz,null);const found=detectPitch(data,rate,{clarity:.45,minHz:198}).hz;assert.ok(found&&Math.round(69+12*Math.log2(found/440))%12===0,String(found));});
+import { test } from "node:test";
+import assert from "node:assert/strict";
+import { detectPitch, PulseTracker } from "./audio.js";
+test("detects tonal frequencies across sample rates", () => {
+  for (const rate of [44100, 48000]) {
+    for (const hz of [110, 220, 440, 880]) {
+      const data = Float32Array.from(
+        { length: 2048 },
+        (_, i) => .2 * Math.sin(2 * Math.PI * hz * i / rate),
+      );
+      assert.ok(Math.abs(detectPitch(data, rate).hz - hz) < 3);
+    }
+  }
+});
+test("silence has no pitch", () =>
+  assert.equal(detectPitch(new Float32Array(2048), 48000).hz, null));
+test("steady onsets estimate 120 BPM and expire in silence", () => {
+  const p = new PulseTracker();
+  for (let i = 0; i < 600; i++) {
+    p.update(i % 50 === 0 ? .3 : .001, i / 100, .02);
+  }
+  assert.equal(p.bpm, 120);
+  p.update(0, 30, .02);
+  assert.equal(p.bpm, null);
+});
+test("sustained bass does not retrigger notes", () => {
+  const p = new PulseTracker();
+  let count = 0;
+  for (let i = 0; i < 400; i++) {
+    p.update(.2, i * .025, .01);
+    count += Number(p.onset);
+  }
+  assert.equal(count, 1);
+});
+test("repeated bass attacks trigger even without pitch changes", () => {
+  const p = new PulseTracker();
+  let count = 0;
+  for (let i = 0; i < 240; i++) {
+    p.update(i % 20 < 4 ? .2 : .001, i * .025, .01);
+    count += Number(p.onset);
+  }
+  assert.equal(count, 12);
+  assert.equal(p.bpm, 120);
+});
+test("bass band excludes treble energy at both sample rates", async () => {
+  const { bassEnergy } = await import("./audio.js");
+  for (const rate of [44100, 48000]) {
+    const bins = new Float32Array(2048).fill(-Infinity);
+    bins[Math.round(2000 * 4096 / rate)] = -10;
+    assert.equal(bassEnergy(bins, rate, 4096), 0);
+    bins[Math.round(80 * 4096 / rate)] = -20;
+    assert.ok(Math.abs(bassEnergy(bins, rate, 4096) - .1) < .0001);
+  }
+});
+test("melody accepts quiet tones without accepting silence", () => {
+  const data = Float32Array.from(
+    { length: 2048 },
+    (_, i) => .004 * Math.sin(2 * Math.PI * 220 * i / 48000),
+  );
+  assert.equal(detectPitch(data, 48000).hz, null);
+  assert.ok(
+    Math.abs(detectPitch(data, 48000, { minRms: .001, clarity: .7 }).hz - 220) <
+      3,
+  );
+  assert.equal(
+    detectPitch(new Float32Array(2048), 48000, { minRms: .001, clarity: .7 })
+      .hz,
+    null,
+  );
+});
+const lanes = (made) => made.map((n) => n.lane);
+test("only pitched melody makes notes; unpitched hits make none", async () => {
+  const { NoteTracker } = await import("./audio.js");
+  const tracker = new NoteTracker();
+  assert.deepEqual(lanes(tracker.update(null, true, 0)), []);
+  assert.deepEqual(lanes(tracker.update(440, true, .5)), [1]);
+});
+test("melody contour walks all three frets: steps move one, leaps two, repeats stay", async () => {
+  const { NoteTracker } = await import("./audio.js");
+  const tracker = new NoteTracker();
+  const at = (hz, t) => {
+    tracker.update(hz, false, t);
+    return lanes(tracker.update(hz, false, t + .05));
+  };
+  assert.deepEqual(lanes(tracker.update(440, true, 0)), [1]);
+  assert.deepEqual(at(392, .5), [0]);
+  assert.deepEqual(lanes(tracker.update(392, true, 1)), [0]);
+  assert.deepEqual(at(587, 1.5), [2]);
+  assert.deepEqual(at(523, 2), [1]);
+  assert.deepEqual(at(220, 2.5), [0]);
+});
+test("melody ignores low pitches when given a floor", () => {
+  const data = Float32Array.from(
+    { length: 2048 },
+    (_, i) => .2 * Math.sin(2 * Math.PI * 110 * i / 48000),
+  );
+  assert.equal(detectPitch(data, 48000, { minHz: 198 }).hz, null);
+});
+test("a melody over a chord still gives its pitch at the game clarity", () => {
+  const rate = 48000, hz = (m) => 440 * 2 ** ((m - 69) / 12);
+  const data = Float32Array.from({ length: 2048 }, (_, i) => {
+    const t = i / rate;
+    let s = 0;
+    for (let h = 1; h <= 6; h++) {
+      s += .25 * Math.sin(2 * Math.PI * hz(72) * h * t) / h;
+    }
+    for (const m of [60, 64, 67]) s += .15 * Math.sin(2 * Math.PI * hz(m) * t);
+    return s;
+  });
+  assert.equal(detectPitch(data, rate, { clarity: .7, minHz: 198 }).hz, null);
+  const found = detectPitch(data, rate, { clarity: .45, minHz: 198 }).hz;
+  assert.ok(
+    found && Math.round(69 + 12 * Math.log2(found / 440)) % 12 === 0,
+    String(found),
+  );
+});

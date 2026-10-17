@@ -9,13 +9,16 @@ export function createDuelSound(getContext) {
 
   const now = () => getContext().currentTime;
 
-  function tone(time, frequency, toFrequency, length, volume, type = 'sine') {
+  function tone(time, frequency, toFrequency, length, volume, type = "sine") {
     const context = getContext();
     const oscillator = context.createOscillator();
     const gain = context.createGain();
     oscillator.type = type;
     oscillator.frequency.setValueAtTime(frequency, time);
-    oscillator.frequency.exponentialRampToValueAtTime(toFrequency, time + length);
+    oscillator.frequency.exponentialRampToValueAtTime(
+      toFrequency,
+      time + length,
+    );
     gain.gain.setValueAtTime(volume, time);
     gain.gain.exponentialRampToValueAtTime(silence, time + length);
     oscillator.connect(gain).connect(context.destination);
@@ -25,7 +28,11 @@ export function createDuelSound(getContext) {
   }
 
   function createNoise(context) {
-    const buffer = context.createBuffer(1, context.sampleRate, context.sampleRate);
+    const buffer = context.createBuffer(
+      1,
+      context.sampleRate,
+      context.sampleRate,
+    );
     const samples = buffer.getChannelData(0);
     for (let i = 0; i < samples.length; i++) samples[i] = Math.random() * 2 - 1;
     return buffer;
@@ -39,7 +46,7 @@ export function createDuelSound(getContext) {
     const gain = context.createGain();
     const at = now();
     source.buffer = noise;
-    filter.type = 'bandpass';
+    filter.type = "bandpass";
     filter.Q.value = q;
     filter.frequency.setValueAtTime(frequency, at);
     filter.frequency.exponentialRampToValueAtTime(toFrequency, at + length);
@@ -53,13 +60,19 @@ export function createDuelSound(getContext) {
 
   function ring(base, volume, length = 0.35) {
     ringPartials.forEach((partial, i) => {
-      tone(now(), base * partial, base * partial * 0.995, length / (i + 1), volume / (i + 1));
+      tone(
+        now(),
+        base * partial,
+        base * partial * 0.995,
+        length / (i + 1),
+        volume / (i + 1),
+      );
     });
   }
 
   // A STRIKE rings brighter as the multiplier climbs; a GOOD is a duller ring.
   const sounds = {
-    strike: multiplier => {
+    strike: (multiplier) => {
       swish(1800, 6000, 0.14, 0.14);
       ring(1320 * 2 ** ((multiplier - 1) / 12 * 2), 0.035);
     },
@@ -69,8 +82,8 @@ export function createDuelSound(getContext) {
     },
     miss: () => {
       swish(900, 350, 0.2, 0.08, 0.8);
-      tone(now(), 196, 185, 0.18, 0.05, 'triangle');
-      tone(now(), 208, 196, 0.18, 0.035, 'triangle');
+      tone(now(), 196, 185, 0.18, 0.05, "triangle");
+      tone(now(), 208, 196, 0.18, 0.035, "triangle");
     },
     parry: () => {
       swish(2500, 7000, 0.1, 0.1);

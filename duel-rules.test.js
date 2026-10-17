@@ -1,17 +1,92 @@
-import {test} from "node:test";import assert from "node:assert/strict";import {grade,nearestBeat,multiplier,strikeOutcome,boutWinner,difficulty,waveOutcome,rivalIntent,rivalParry} from './duel-rules.js';
-test('a cut within 90 ms of the beat is a STRIKE, within 180 ms GOOD, else off beat',()=>{assert.equal(grade(.05),'strike');assert.equal(grade(-.09),'strike');assert.equal(grade(.15),'good');assert.equal(grade(-.2),'off');});
-test('a press is measured against the closest beat',()=>{{const n=nearestBeat([.5,1.1,1.6],1.25);assert.equal(n.index,1);assert.ok(Math.abs(n.offset-.15)<1e-9);}assert.equal(nearestBeat([.5,1.1,1.6],1.5).index,2);assert.equal(nearestBeat([],1).index,-1);});
-test('four STRIKEs in a row raise the multiplier, capped at ×4',()=>{assert.equal(multiplier(3),1);assert.equal(multiplier(4),2);assert.equal(multiplier(12),4);assert.equal(multiplier(40),4);});
-test('a STRIKE extends the chain and hits harder with it',()=>assert.deepEqual(strikeOutcome('strike',7),{chain:8,damage:24,points:300}));
-test('a GOOD cut lands but breaks the chain',()=>assert.deepEqual(strikeOutcome('good',9),{chain:0,damage:5,points:50}));
-test('an off-beat cut does nothing and breaks the chain',()=>assert.deepEqual(strikeOutcome('off',9),{chain:0,damage:0,points:0}));
-test('the bout goes to the one with more health',()=>{assert.equal(boutWinner(40,0),'player');assert.equal(boutWinner(0,12),'enemy');assert.equal(boutWinner(30,30),'draw');});
-test('each multiplier step speeds up and toughens the rival',()=>{assert.deepEqual(difficulty(1),{bpm:100,aggression:.6,damage:16});assert.deepEqual(difficulty(4),{bpm:130,aggression:.9,damage:28});});
-test('a wave from afar hits for less than the blade and keeps the chain without growing it',()=>{assert.deepEqual(waveOutcome('strike',8),{chain:8,damage:10,points:120});assert.deepEqual(strikeOutcome('strike',8).damage,24);});
-test('a GOOD wave breaks the chain and still deals at least 2',()=>assert.deepEqual(waveOutcome('good',0),{chain:0,damage:2,points:20}));
-test('an off-beat wave does nothing',()=>assert.deepEqual(waveOutcome('off',5),{chain:0,damage:0,points:0}));
-test('an even bout: the rival usually closes in and rarely backs off',()=>assert.deepEqual(rivalIntent(250,250),{approach:.7,retreat:.1}));
-test('a rival far ahead presses in and never lingers back',()=>assert.deepEqual(rivalIntent(250,50),{approach:.95,retreat:.05}));
-test('a rival far behind keeps away',()=>assert.deepEqual(rivalIntent(50,250),{approach:.2,retreat:.6}));
-test('the rival parries a fifth of clean STRIKEs and over a third of GOOD cuts at ×1',()=>{assert.equal(rivalParry('strike',1),.2);assert.equal(rivalParry('good',1),.35);});
-test('the rival parries more as the multiplier climbs, never above 70%',()=>{assert.ok(Math.abs(rivalParry('strike',4)-.5)<1e-9);assert.equal(rivalParry('good',4),.65);assert.equal(rivalParry('good',9),.7);});
+import { test } from "node:test";
+import assert from "node:assert/strict";
+import {
+  boutWinner,
+  difficulty,
+  grade,
+  multiplier,
+  nearestBeat,
+  rivalIntent,
+  rivalParry,
+  strikeOutcome,
+  waveOutcome,
+} from "./duel-rules.js";
+test("a cut within 90 ms of the beat is a STRIKE, within 180 ms GOOD, else off beat", () => {
+  assert.equal(grade(.05), "strike");
+  assert.equal(grade(-.09), "strike");
+  assert.equal(grade(.15), "good");
+  assert.equal(grade(-.2), "off");
+});
+test("a press is measured against the closest beat", () => {
+  {
+    const n = nearestBeat([.5, 1.1, 1.6], 1.25);
+    assert.equal(n.index, 1);
+    assert.ok(Math.abs(n.offset - .15) < 1e-9);
+  }
+  assert.equal(nearestBeat([.5, 1.1, 1.6], 1.5).index, 2);
+  assert.equal(nearestBeat([], 1).index, -1);
+});
+test("four STRIKEs in a row raise the multiplier, capped at ×4", () => {
+  assert.equal(multiplier(3), 1);
+  assert.equal(multiplier(4), 2);
+  assert.equal(multiplier(12), 4);
+  assert.equal(multiplier(40), 4);
+});
+test("a STRIKE extends the chain and hits harder with it", () =>
+  assert.deepEqual(strikeOutcome("strike", 7), {
+    chain: 8,
+    damage: 24,
+    points: 300,
+  }));
+test("a GOOD cut lands but breaks the chain", () =>
+  assert.deepEqual(strikeOutcome("good", 9), {
+    chain: 0,
+    damage: 5,
+    points: 50,
+  }));
+test("an off-beat cut does nothing and breaks the chain", () =>
+  assert.deepEqual(strikeOutcome("off", 9), {
+    chain: 0,
+    damage: 0,
+    points: 0,
+  }));
+test("the bout goes to the one with more health", () => {
+  assert.equal(boutWinner(40, 0), "player");
+  assert.equal(boutWinner(0, 12), "enemy");
+  assert.equal(boutWinner(30, 30), "draw");
+});
+test("each multiplier step speeds up and toughens the rival", () => {
+  assert.deepEqual(difficulty(1), { bpm: 100, aggression: .6, damage: 16 });
+  assert.deepEqual(difficulty(4), { bpm: 130, aggression: .9, damage: 28 });
+});
+test("a wave from afar hits for less than the blade and keeps the chain without growing it", () => {
+  assert.deepEqual(waveOutcome("strike", 8), {
+    chain: 8,
+    damage: 10,
+    points: 120,
+  });
+  assert.deepEqual(strikeOutcome("strike", 8).damage, 24);
+});
+test("a GOOD wave breaks the chain and still deals at least 2", () =>
+  assert.deepEqual(waveOutcome("good", 0), {
+    chain: 0,
+    damage: 2,
+    points: 20,
+  }));
+test("an off-beat wave does nothing", () =>
+  assert.deepEqual(waveOutcome("off", 5), { chain: 0, damage: 0, points: 0 }));
+test("an even bout: the rival usually closes in and rarely backs off", () =>
+  assert.deepEqual(rivalIntent(250, 250), { approach: .7, retreat: .1 }));
+test("a rival far ahead presses in and never lingers back", () =>
+  assert.deepEqual(rivalIntent(250, 50), { approach: .95, retreat: .05 }));
+test("a rival far behind keeps away", () =>
+  assert.deepEqual(rivalIntent(50, 250), { approach: .2, retreat: .6 }));
+test("the rival parries a fifth of clean STRIKEs and over a third of GOOD cuts at ×1", () => {
+  assert.equal(rivalParry("strike", 1), .2);
+  assert.equal(rivalParry("good", 1), .35);
+});
+test("the rival parries more as the multiplier climbs, never above 70%", () => {
+  assert.ok(Math.abs(rivalParry("strike", 4) - .5) < 1e-9);
+  assert.equal(rivalParry("good", 4), .65);
+  assert.equal(rivalParry("good", 9), .7);
+});
